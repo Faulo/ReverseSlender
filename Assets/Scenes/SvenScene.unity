@@ -286,7 +286,7 @@ MonoScript:
   m_ExecutionOrder: 0
   m_ClassName: SceneObjectIDMapSceneAsset
   m_Namespace: UnityEngine.Experimental.Rendering.HDPipeline
---- !u!114 &525442868
+--- !u!114 &573520379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2398,7 +2398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: dab0766de4a4b5349b80ce1a86555414, type: 2}
   m_StaticLightingSkyUniqueID: 2
-  m_SkySettings: {fileID: 525442868}
+  m_SkySettings: {fileID: 573520379}
   m_SkySettingsFromProfile: {fileID: 5758136461106579282, guid: dab0766de4a4b5349b80ce1a86555414,
     type: 2}
 --- !u!114 &2011204168
@@ -3384,8 +3384,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
         type: 3}
+      propertyPath: sounds.Array.size
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
       propertyPath: sounds.Array.data[0].source
       value: 
       objectReference: {fileID: 1541213898}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12]._name
+      value: Crow
+      objectReference: {fileID: 0}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12].volume
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12].pitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 70410010d3513254bbf1b430a8837326, type: 3}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12].randomizePitch
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8107780854220732584, guid: 573bc27876aea85479854001da509ad7,
+        type: 3}
+      propertyPath: sounds.Array.data[12].pitchRange
+      value: 0.15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 573bc27876aea85479854001da509ad7, type: 3}

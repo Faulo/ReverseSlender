@@ -187,3 +187,16 @@ MonoBehaviour:
     is3DSound: 0
     parentObject: {fileID: 0}
     source: {fileID: 0}
+  - _name: HeavyBreathing
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 0ee1e67c3dadfbe498491f5dd58bfbd9, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomizePitch: 1
+    pitchRange: 0.1
+    loop: 1
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
