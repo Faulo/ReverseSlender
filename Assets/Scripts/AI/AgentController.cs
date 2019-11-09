@@ -50,7 +50,14 @@ namespace ReverseSlender.AI {
             vision.onNoticeCollectible += (collectible) => {
                 if (!collectibles.Contains(collectible)) {
                     collectibles.Add(collectible);
+                    if (!hasGoal) {
+                        goal = collectible.transform;
+                        goalType = GoalType.Collectible;
+                    }
                 }
+            };
+            vision.onNoticePlayer += (distance) => {
+                fear += 1 / distance;
             };
         }
 
