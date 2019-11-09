@@ -21,5 +21,15 @@ namespace ReverseSlender.AI {
         public float horizontalFieldOfView;
         [Range(0, 10)]
         public float verticalFieldOfView;
+
+        [Header("Player Interaction")]
+        [Range(0, 100), Tooltip("How much Ghost-Avatar scares Bryce")]
+        public float ghostMultiplier;
+        [Range(0, 100), Tooltip("How much Monster-Avatar scares Bryce")]
+        public float monsterMultiplier;
+        [Range(0, 2), Tooltip("How much collecting gems restores sanity.")]
+        public float collectibleRest;
+        [Range(0, 2), Tooltip("How much praying restores sanity.")]
+        public float hideoutRest;
     }
 }
