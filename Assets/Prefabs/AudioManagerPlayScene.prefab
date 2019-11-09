@@ -47,7 +47,7 @@ MonoBehaviour:
   - _name: Ambience
     mixerGroup: {fileID: 0}
     clip: {fileID: 8300000, guid: 0ee5d8b250550cb46802ae4962acb926, type: 3}
-    volume: 0.15
+    volume: 0.25
     pitch: 1
     randomizePitch: 0
     pitchRange: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   - _name: Wind
     mixerGroup: {fileID: 0}
     clip: {fileID: 8300000, guid: 3d88f2211e9237f46b7eccaa1bec5bcb, type: 3}
-    volume: 0.05
+    volume: 0
     pitch: 1
     randomizePitch: 0
     pitchRange: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
     randomizePitch: 0
     pitchRange: 0
     loop: 1
-    playOnAwake: 1
+    playOnAwake: 0
     ignoreGamePaused: 0
     is3DSound: 0
     parentObject: {fileID: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - _name: Dying
     mixerGroup: {fileID: 0}
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 42288124ab81d384b9dac5571ccfdf93, type: 3}
     volume: 0.5
     pitch: 1
     randomizePitch: 0
@@ -133,5 +133,57 @@ MonoBehaviour:
     playOnAwake: 0
     ignoreGamePaused: 0
     is3DSound: 1
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: DistantFox
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 106a570f7af81c54191b89ff7f8eb35e, type: 3}
+    volume: 0.35
+    pitch: 1
+    randomizePitch: 0
+    pitchRange: 0.1
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: DistantWolf
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: f233eef2b57e87540ae8b43d1f7df7e3, type: 3}
+    volume: 0.05
+    pitch: 1
+    randomizePitch: 1
+    pitchRange: 0.2
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: DistantScream1
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 2243f8344df9c4647b090c219042dd33, type: 3}
+    volume: 0.05
+    pitch: 1
+    randomizePitch: 1
+    pitchRange: 0.15
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: DistantScream2
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 4efc44a17452c0749b107018e2a8add7, type: 3}
+    volume: 0.05
+    pitch: 1
+    randomizePitch: 1
+    pitchRange: 0.15
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
     parentObject: {fileID: 0}
     source: {fileID: 0}
