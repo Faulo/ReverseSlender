@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 namespace ReverseSlender.AI {
     public class AgentController : MonoBehaviour {
+        [Header("Settings")]
         [SerializeField]
         AgentSettings settings;
         [SerializeField]
@@ -12,15 +13,19 @@ namespace ReverseSlender.AI {
         [SerializeField]
         NavMeshAgent agent;
 
+        [Header("Auto-detected fields")]
         [SerializeField]
         internal Transform goal;
         [SerializeField]
         internal GoalType goalType;
+        [SerializeField]
+        internal VisionCone vision;
 
+        [Header("In-game parameters")]
         [SerializeField, Range(-1, 1)]
-        private float speed = -1;
+        private float hurry = 0;
         [SerializeField, Range(-1, 1)]
-        private float fear = -1;
+        private float fear = 0;
         private bool hasGoal {
             get {
                 if (goal != null) {
@@ -37,12 +42,14 @@ namespace ReverseSlender.AI {
         private bool touchesCollectible => goalType == GoalType.Collectible && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
 
         void Start() {
+            vision = GetComponentInChildren<VisionCone>();
+            vision.settings = settings;
         }
 
         void Update() {
-            agent.speed = speed * settings.speedOverFear.Evaluate(fear) * settings.maximumSpeed;
+            agent.speed = settings.speedOverHurry.Evaluate(hurry) * settings.speedOverFear.Evaluate(fear) * settings.baseSpeed;
 
-            animator.SetFloat("speed", speed);
+            animator.SetFloat("hurry", hurry);
             animator.SetFloat("fear", fear);
             animator.SetBool("hasGoal", hasGoal);
             animator.SetBool("touchesCollectible", touchesCollectible);
