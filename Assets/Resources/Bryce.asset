@@ -66,7 +66,7 @@ MonoBehaviour:
   visionRayDistance: 100
   horizontalFieldOfView: 2
   verticalFieldOfView: 1
-  ghostMultiplier: 100
+  ghostMultiplier: 10
   monsterMultiplier: 100
-  hideoutRest: 1
   collectibleRest: 0.1
+  hideoutRest: 1

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using Slothsoft.UnityExtensions;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -64,10 +66,8 @@ namespace ReverseSlender.AI {
                     AddFear(attention * settings.monsterMultiplier);
                     if (hideoutMemory.Count == 0 && fear == 1) {
                         Die();
-                    }
-                    if (hideoutMemory.Count > 0 && goalType != GoalType.Hideout) {
-                        goal = hideoutMemory.RandomElement().transform;
-                        goalType = GoalType.Hideout;
+                    } else {
+                        RecallHideout();
                     }
                 } else {
                     AddHurry(attention * settings.ghostMultiplier);
@@ -112,8 +112,13 @@ namespace ReverseSlender.AI {
             if (!collectiblesMemory.Contains(collectible)) {
                 collectiblesMemory.Add(collectible);
             }
-            if (!hasGoal) {
-                goal = collectible.transform;
+            RecallCollectible();
+        }
+        public void RecallCollectible() {
+            if (collectiblesMemory.Count > 0 && !animator.GetBool("hasGoal")) {
+                goal = collectiblesMemory
+                    .Select(collectible => collectible.transform)
+                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
                 goalType = GoalType.Collectible;
             }
         }
@@ -126,6 +131,14 @@ namespace ReverseSlender.AI {
         public void RememberHideout(Hideout hideout) {
             if (!hideoutMemory.Contains(hideout)) {
                 hideoutMemory.Add(hideout);
+            }
+        }
+        public void RecallHideout() {
+            if (hideoutMemory.Count > 0 && goalType != GoalType.Hideout) {
+                goal = hideoutMemory
+                    .Select(hideout => hideout.transform)
+                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
+                goalType = GoalType.Hideout;
             }
         }
         public void ForgetHideout(Hideout hideout) {
