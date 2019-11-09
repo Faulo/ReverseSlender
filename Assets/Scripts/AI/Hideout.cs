@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace ReverseSlender.AI {
-    public enum GoalType {
-        Collectible,
-        Ghost,
-        Hideout
+    public class Hideout : MonoBehaviour {
     }
 }

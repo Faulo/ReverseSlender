@@ -62,7 +62,11 @@ MonoBehaviour:
     m_RotationOrder: 4
   baseSpeed: 1
   drawVisionCone: 1
-  numberOfVisionRays: 50
+  numberOfVisionRays: 500
   visionRayDistance: 100
   horizontalFieldOfView: 2
   verticalFieldOfView: 1
+  ghostMultiplier: 100
+  monsterMultiplier: 100
+  hideoutRest: 1
+  collectibleRest: 0.1

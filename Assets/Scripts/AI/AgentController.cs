@@ -20,13 +20,20 @@ namespace ReverseSlender.AI {
         internal GoalType goalType;
         [SerializeField]
         internal VisionCone vision;
-        internal ISet<Transform> collectibles = new HashSet<Transform>();
+        internal ISet<Collectible> collectiblesMemory = new HashSet<Collectible>();
+        internal ISet<Hideout> hideoutMemory = new HashSet<Hideout>();
 
         [Header("In-game parameters")]
         [SerializeField, Range(-1, 1)]
         private float hurry = 0;
+        private void AddHurry(float add) {
+            hurry = Mathf.Clamp(hurry + add, -1, 1);
+        }
         [SerializeField, Range(-1, 1)]
         private float fear = 0;
+        private void AddFear(float add) {
+            fear = Mathf.Clamp(fear + add, -1, 1);
+        }
         private bool hasGoal {
             get {
                 if (goal != null) {
@@ -41,23 +48,30 @@ namespace ReverseSlender.AI {
             }
         }
         private bool touchesCollectible => goalType == GoalType.Collectible && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
+        private bool touchesHideout => goalType == GoalType.Hideout && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
 
-        
+        private bool isDying;
+
+
 
         void Start() {
             vision = GetComponentInChildren<VisionCone>();
             vision.settings = settings;
-            vision.onNoticeCollectible += (collectible) => {
-                if (!collectibles.Contains(collectible)) {
-                    collectibles.Add(collectible);
-                    if (!hasGoal) {
-                        goal = collectible.transform;
-                        goalType = GoalType.Collectible;
+            vision.onNoticeCollectible += RememberCollectible;
+            vision.onNoticeHideout += RememberHideout;
+            vision.onNoticePlayer += (PlayerController player, float attention) => {
+                if (player.InScareMode) {
+                    AddFear(attention * settings.monsterMultiplier);
+                    if (hideoutMemory.Count == 0 && fear == 1) {
+                        Die();
                     }
+                    if (hideoutMemory.Count > 0 && goalType != GoalType.Hideout) {
+                        goal = hideoutMemory.RandomElement().transform;
+                        goalType = GoalType.Hideout;
+                    }
+                } else {
+                    AddHurry(attention * settings.ghostMultiplier);
                 }
-            };
-            vision.onNoticePlayer += (distance) => {
-                fear += 1 / distance;
             };
         }
 
@@ -68,6 +82,7 @@ namespace ReverseSlender.AI {
             animator.SetFloat("fear", fear);
             animator.SetBool("hasGoal", hasGoal);
             animator.SetBool("touchesCollectible", touchesCollectible);
+            animator.SetBool("touchesHideout", touchesHideout);
         }
 
         public void LookAtGoal() {
@@ -78,14 +93,52 @@ namespace ReverseSlender.AI {
 
         public void DestroyGoal() {
             if (goal) {
-                Debug.Log(string.Format("I, {0}, found an item!", gameObject));
-                if (collectibles.Contains(goal)) {
-                    collectibles.Remove(goal);
+                switch (goalType) {
+                    case GoalType.Collectible:
+                        AddFear(-settings.collectibleRest);
+                        ForgetCollectible(goal.GetComponent<Collectible>());
+                        break;
+                    case GoalType.Hideout:
+                        AddFear(-settings.hideoutRest);
+                        ForgetHideout(goal.GetComponent<Hideout>());
+                        break;
                 }
                 Destroy(goal.gameObject);
                 goal = null;
             }
         }
-    }
 
+        public void RememberCollectible(Collectible collectible) {
+            if (!collectiblesMemory.Contains(collectible)) {
+                collectiblesMemory.Add(collectible);
+            }
+            if (!hasGoal) {
+                goal = collectible.transform;
+                goalType = GoalType.Collectible;
+            }
+        }
+        public void ForgetCollectible(Collectible collectible) {
+            if (collectiblesMemory.Contains(collectible)) {
+                collectiblesMemory.Remove(collectible);
+            }
+        }
+
+        public void RememberHideout(Hideout hideout) {
+            if (!hideoutMemory.Contains(hideout)) {
+                hideoutMemory.Add(hideout);
+            }
+        }
+        public void ForgetHideout(Hideout hideout) {
+            if (hideoutMemory.Contains(hideout)) {
+                hideoutMemory.Remove(hideout);
+            }
+        }
+
+        private void Die() {
+            if (!isDying) {
+                isDying = true;
+                animator.SetTrigger("isDying");
+            }
+        }
+    }
 }

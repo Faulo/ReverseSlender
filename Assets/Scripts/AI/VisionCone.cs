@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace ReverseSlender.AI {
     public class VisionCone : MonoBehaviour {
-        public System.Action<Transform> onNoticeCollectible;
-        public System.Action<float> onNoticePlayer;
+        public System.Action<Collectible> onNoticeCollectible;
+        public System.Action<Hideout> onNoticeHideout;
+        public System.Action<PlayerController, float> onNoticePlayer;
 
         public AgentSettings settings { get; set; }
 
@@ -32,15 +33,21 @@ namespace ReverseSlender.AI {
                         .OrderBy(h => h.distance)
                         .FirstOrDefault();
 
-                    var collectible = hit.rigidbody?.GetComponent<Collectible>();
+                    var collectible = hit.collider.GetComponentInParent<Collectible>();
                     if (collectible) {
-                        onNoticeCollectible?.Invoke(collectible.transform);
+                        onNoticeCollectible?.Invoke(collectible);
                         DrawVision(hit.point, Color.green);
                         return;
                     }
-                    var player = hit.rigidbody?.GetComponent<PlayerController>();
+                    var hideout = hit.collider.GetComponent<Hideout>();
+                    if (hideout) {
+                        onNoticeHideout?.Invoke(hideout);
+                        DrawVision(hit.point, Color.yellow);
+                        return;
+                    }
+                    var player = hit.collider.GetComponent<PlayerController>();
                     if (player) {
-                        onNoticePlayer?.Invoke(hit.distance);
+                        onNoticePlayer?.Invoke(player, Time.deltaTime * (1f / settings.numberOfVisionRays));
                         DrawVision(hit.point, Color.magenta);
                         return;
                     }
