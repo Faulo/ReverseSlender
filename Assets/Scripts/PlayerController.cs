@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         cam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
     }
 
     private void Update()
