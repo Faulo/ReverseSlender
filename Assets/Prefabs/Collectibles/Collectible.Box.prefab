@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 279416613452933357}
   - component: {fileID: 79021888183582475}
   - component: {fileID: 1202713939974390799}
-  - component: {fileID: 154879913066535133}
+  - component: {fileID: 7178710285185168848}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -26,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8755484920836603105}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7719233321635303541}
   m_RootOrder: 0
@@ -79,7 +79,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &154879913066535133
+--- !u!65 &7178710285185168848
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,41 +103,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Collectible.Box
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5517017582634586718, guid: db53bc7aadd47ff47828d7930cb6d3f4,
         type: 3}
