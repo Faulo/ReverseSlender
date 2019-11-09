@@ -22,8 +22,7 @@ namespace ReverseSlender.AI {
             if (agentController.goal) {
                 agent.destination = agentController.goal.position;
             } else {
-                agent.destination = agent.transform.position;
-                agent.isStopped = true;
+                agentController.StopMoving();
             }
         }
         // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

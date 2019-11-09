@@ -7,8 +7,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Sound[] sounds;
     public int SoundCount => sounds.Length;
 
-    [SerializeField] private AudioSource sampleSourceFor3DSettings;
-
     private static AudioManager instance;
     public static AudioManager Instance => instance;
 
@@ -73,6 +71,7 @@ public class AudioManager : MonoBehaviour
 
                 GameObject sourceGameobject = new GameObject("AudioSource Sound : " + s.Name);
                 sourceGameobject.transform.parent = s.ParentObject.transform;
+                sourceGameobject.transform.localPosition = Vector3.zero;
                 AudioSource newSource = sourceGameobject.AddComponent<AudioSource>();
                 s.source = newSource;
                 s.source.clip = s.Clip;
@@ -82,6 +81,7 @@ public class AudioManager : MonoBehaviour
                 s.source.loop = s.Loop;
                 s.source.playOnAwake = s.PlayOnAwake;
                 s.source.ignoreListenerPause = s.IgnoreGamePaused;
+                s.source.spatialBlend = 1f;
             }
         }
     }
@@ -267,7 +267,7 @@ public class AudioManager : MonoBehaviour
     public void RemoveSound(int index)
     {
         Sound sound = sounds[index];
-        if(sound.Is3DSound && sound.ParentObject != null)
+        if (sound.Is3DSound && sound.ParentObject != null)
         {
             for (int i = sound.ParentObject.transform.childCount - 1; i >= 0; i--)
             {
