@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField] private float moveSpeed = 300;
 
     private Rigidbody body;
     private Cinemachine.CinemachineVirtualCamera cam;
 
     private Vector3 moveVector;
-    private Vector3? startingVectorMovingLeftOrRight;
+    private Vector3? startingVectorMovingLeft;
+    private Vector3? startingVectorMovingRight;
 
     private void Awake()
     {
@@ -34,28 +34,32 @@ public class PlayerController : MonoBehaviour
     private void GetInput()
     {
         moveVector = new Vector3();
-        bool w = Input.GetKey(KeyCode.W);
-        bool s = Input.GetKey(KeyCode.S);
-        bool a = Input.GetKey(KeyCode.A);
-        bool d = Input.GetKey(KeyCode.D);
-        if (w)
+
+        bool moveForward = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+        bool moveBack = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+        bool moveLeft = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        bool moveRight = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+
+        if (moveForward)
             moveVector += cam.transform.forward;
-        else if (s)
+        else if (moveBack)
             moveVector += -cam.transform.forward;
-        if (a)
+        if (moveLeft)
         {
-            if (startingVectorMovingLeftOrRight.HasValue == false)
-                startingVectorMovingLeftOrRight = -cam.transform.right;
-            moveVector += startingVectorMovingLeftOrRight.Value;
+            if (startingVectorMovingLeft.HasValue == false)
+                startingVectorMovingLeft = -cam.transform.right;
+            moveVector += startingVectorMovingLeft.Value;
         }
-        else if (d)
+        else if (moveRight)
         {
-            if (startingVectorMovingLeftOrRight.HasValue == false)
-                startingVectorMovingLeftOrRight = cam.transform.right;
-            moveVector += startingVectorMovingLeftOrRight.Value;
+            if (startingVectorMovingRight.HasValue == false)
+                startingVectorMovingRight = cam.transform.right;
+            moveVector += startingVectorMovingRight.Value;
         }
-        if (a == false || d == false)
-            startingVectorMovingLeftOrRight = null;
+        if (moveLeft == false)
+            startingVectorMovingLeft = null;
+        if (moveRight == false)
+            startingVectorMovingRight = null;
     }
 
     private void HandleMovement()
