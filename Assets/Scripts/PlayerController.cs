@@ -68,6 +68,8 @@ public class PlayerController : MonoBehaviour
     [Header("Controls")]
     [SerializeField] private bool alternativeControls;
 
+    private const string SCAREBUTTON_NAME = "Scare";
+
     private void Awake()
     {
         body = GetComponent<Rigidbody>();
@@ -84,12 +86,15 @@ public class PlayerController : MonoBehaviour
         CheckForGround();
         ghostVFX.SetVector3(GHOST_ATTRACTIVETARGETPOSITION_NAME, ghostVFX.transform.InverseTransformPoint(body.position));
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool startScare = Input.GetButtonDown(SCAREBUTTON_NAME) || (Input.GetAxis(SCAREBUTTON_NAME) >= .8f && InScareMode == false);
+        bool endScare = Input.GetButtonUp(SCAREBUTTON_NAME) || (Input.GetAxis(SCAREBUTTON_NAME) < .5f && InScareMode == true);
+
+        if (startScare)
         {
             DoSomeScaring();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (endScare)
         {
             EndTheScaring();
         }
@@ -144,10 +149,15 @@ public class PlayerController : MonoBehaviour
     {
         moveVector = new Vector3();
 
-        bool moveForward = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
-        bool moveBack = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
-        bool moveLeft = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
-        bool moveRight = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+        float inputXAxis = Input.GetAxis("Horizontal");
+        float inputYAxis = Input.GetAxis("Vertical");
+
+        float simpleDeadZone = .25f;
+
+        bool moveForward = inputYAxis > simpleDeadZone;// Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+        bool moveBack = inputYAxis < -simpleDeadZone;// Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+        bool moveLeft = inputXAxis < -simpleDeadZone;// Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        bool moveRight = inputXAxis > simpleDeadZone;// Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
 
         if (moveForward)
             moveVector += cam.transform.forward;
