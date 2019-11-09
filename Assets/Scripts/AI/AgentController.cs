@@ -20,6 +20,7 @@ namespace ReverseSlender.AI {
         internal GoalType goalType;
         [SerializeField]
         internal VisionCone vision;
+        internal ISet<Transform> collectibles = new HashSet<Transform>();
 
         [Header("In-game parameters")]
         [SerializeField, Range(-1, 1)]
@@ -41,9 +42,16 @@ namespace ReverseSlender.AI {
         }
         private bool touchesCollectible => goalType == GoalType.Collectible && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
 
+        
+
         void Start() {
             vision = GetComponentInChildren<VisionCone>();
             vision.settings = settings;
+            vision.onNoticeCollectible += (collectible) => {
+                if (!collectibles.Contains(collectible)) {
+                    collectibles.Add(collectible);
+                }
+            };
         }
 
         void Update() {
@@ -64,6 +72,9 @@ namespace ReverseSlender.AI {
         public void DestroyGoal() {
             if (goal) {
                 Debug.Log(string.Format("I, {0}, found an item!", gameObject));
+                if (collectibles.Contains(goal)) {
+                    collectibles.Remove(goal);
+                }
                 Destroy(goal.gameObject);
                 goal = null;
             }
