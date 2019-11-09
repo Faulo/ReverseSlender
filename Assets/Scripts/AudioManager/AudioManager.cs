@@ -23,7 +23,8 @@ public class AudioManager : MonoBehaviour
         "DistantFox",
         "DistantWolf",
         "DistantScream1",
-        "DistantScream2"
+        "DistantScream2",
+        "Roar",
     };
 
     private void Awake()

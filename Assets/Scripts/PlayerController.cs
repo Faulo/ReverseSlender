@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool alternativeControls;
+    private bool alternativeControls = true;
 
     private const string SCAREBUTTON_NAME = "Scare";
 
