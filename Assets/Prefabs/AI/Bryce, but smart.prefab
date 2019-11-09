@@ -53,6 +53,8 @@ MonoBehaviour:
   agent: {fileID: 3359266491091812370}
   goal: {fileID: 0}
   goalType: 0
+  speed: -1
+  fear: -1
 --- !u!1001 &1240697809343247247
 PrefabInstance:
   m_ObjectHideFlags: 0

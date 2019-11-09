@@ -17,9 +17,10 @@ namespace ReverseSlender.AI {
         [SerializeField]
         internal GoalType goalType;
 
-        private float speed => agent.velocity.magnitude / settings.maximumSpeed;
-        [SerializeField, Range(0, 1)]
-        private float fear;
+        [SerializeField, Range(-1, 1)]
+        private float speed = -1;
+        [SerializeField, Range(-1, 1)]
+        private float fear = -1;
         private bool hasGoal {
             get {
                 if (goal != null) {
@@ -39,7 +40,7 @@ namespace ReverseSlender.AI {
         }
 
         void Update() {
-            agent.speed = settings.speedOverFear.Evaluate(fear) * settings.maximumSpeed;
+            agent.speed = speed * settings.speedOverFear.Evaluate(fear) * settings.maximumSpeed;
 
             animator.SetFloat("speed", speed);
             animator.SetFloat("fear", fear);
