@@ -1,4 +1,5 @@
 ﻿using Slothsoft.UnityExtensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,9 @@ namespace ReverseSlender.AI {
         private void AddFear(float add) {
             fear = Mathf.Clamp(fear + add, -1, 1);
         }
+
+        
+
         private bool hasGoal {
             get {
                 if (goal != null) {
@@ -150,8 +154,13 @@ namespace ReverseSlender.AI {
         private void Die() {
             if (!isDying) {
                 isDying = true;
+                StopMoving();
                 animator.SetTrigger("isDying");
             }
+        }
+        public void StopMoving() {
+            agent.destination = agent.transform.position;
+            agent.isStopped = true;
         }
     }
 }
