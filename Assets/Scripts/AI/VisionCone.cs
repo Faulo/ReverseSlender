@@ -33,16 +33,18 @@ namespace ReverseSlender.AI {
                     var collectible = hit.rigidbody?.GetComponent<Collectible>();
                     if (collectible) {
                         onNoticeCollectible?.Invoke(collectible.transform);
-                    }
-
-                    if (settings.drawVisionCone) {
-                        Debug.DrawLine(transform.position, hit.point, Color.green, SECONDS_TO_DRAW);
+                        DrawVision(hit.point, Color.green);
+                    } else {
+                        DrawVision(hit.point, Color.blue);
                     }
                 } else {
-                    if (settings.drawVisionCone) {
-                        Debug.DrawRay(transform.position, direction * settings.visionRayDistance, Color.red, SECONDS_TO_DRAW);
-                    }
+                    DrawVision(transform.position + direction * settings.visionRayDistance, Color.red);
                 }
+            }
+        }
+        void DrawVision(Vector3 position, Color color) {
+            if (settings.drawVisionCone) {
+                Debug.DrawLine(transform.position, position, color, SECONDS_TO_DRAW);
             }
         }
     }
