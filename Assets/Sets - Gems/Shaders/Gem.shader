@@ -4,7 +4,7 @@
 Shader "FX/Gem"
 {
 	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
+		[HDR]_Color ("Color", Color) = (1,1,1,1)
 		_ReflectionStrength ("Reflection Strength", Range(0.0,2.0)) = 1.0
 		_EnvironmentLight ("Environment Light", Range(0.0,2.0)) = 1.0
 		_Emission ("Emission", Range(0.0,2.0)) = 0.0
