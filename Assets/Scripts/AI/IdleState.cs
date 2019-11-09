@@ -13,12 +13,10 @@ namespace ReverseSlender.AI {
 
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
         override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            if (!animator.GetBool("hasGoal")) {
-                var collectible = FindObjectsOfType<Collectible>().RandomElement();
-                if (collectible) {
-                    agentController.goal = collectible.transform;
-                    agentController.goalType = GoalType.Collectible;
-                }
+            if (!animator.GetBool("hasGoal") && agentController.collectibles.Count > 0) {
+                var collectible = agentController.collectibles.RandomElement();
+                agentController.goal = collectible.transform;
+                agentController.goalType = GoalType.Collectible;
             }
         }
 
