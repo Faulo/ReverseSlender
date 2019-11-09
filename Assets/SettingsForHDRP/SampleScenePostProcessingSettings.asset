@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 598e2d32e2c7b0c418e030c3236d663a, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   spectralLut:
     m_OverrideState: 0
     m_Value: {fileID: 0}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.05
+    m_Value: 0
     min: 0
     max: 1
   maxSamples:
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   temperature:
     m_OverrideState: 1
-    m_Value: 20
+    m_Value: -22
     min: -100
     max: 100
   tint:
@@ -83,7 +83,7 @@ MonoBehaviour:
   active: 1
   m_AdvancedMode: 0
   mode:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   meteringMode:
     m_OverrideState: 0
@@ -96,13 +96,13 @@ MonoBehaviour:
     m_Value: 0
   compensation:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0
   limitMin:
     m_OverrideState: 0
     m_Value: -10
   limitMax:
-    m_OverrideState: 1
-    m_Value: 9.5
+    m_OverrideState: 0
+    m_Value: 50
   curveMap:
     m_OverrideState: 0
     m_Value:
@@ -158,8 +158,8 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   color:
-    m_OverrideState: 0
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.26415092, b: 0.22665851, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
@@ -168,17 +168,17 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.25
+    m_Value: 0.489
     min: 0
     max: 1
   smoothness:
     m_OverrideState: 0
-    m_Value: 0.2
+    m_Value: 0.291
     min: 0.01
     max: 1
   roundness:
     m_OverrideState: 0
-    m_Value: 1
+    m_Value: 0.942
     min: 0
     max: 1
   rounded:
