@@ -22,6 +22,8 @@ namespace ReverseSlender.AI {
             }
             if (goal) {
                 agent.destination = goal.transform.position;
+            } else {
+                agent.isStopped = true;
             }
         }
     }
