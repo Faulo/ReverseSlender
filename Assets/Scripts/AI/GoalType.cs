@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace ReverseSlender.AI {
     public enum GoalType {
-        Collectible
+        Collectible,
+        Ghost,
+        Hideout
     }
 }

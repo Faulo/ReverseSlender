@@ -28,9 +28,22 @@ namespace Slothsoft.UnityExtensions {
             }
         }
         public static T RandomWeightedElement<T>(this IEnumerable<T> source, Func<T, int> weighting) {
+            source = source.ToArray();
             var weights = new Dictionary<T, int>();
             foreach (var element in source) {
                 weights[element] = weighting(element);
+            }
+            return RandomWeightedElement(source, weights);
+        }
+        public static T RandomWeightedElementDescending<T>(this IEnumerable<T> source, Func<T, int> weighting) {
+            source = source.ToArray();
+            var weights = new Dictionary<T, int>();
+            foreach (var element in source) {
+                weights[element] = weighting(element);
+            }
+            var sum = weights.Values.Sum();
+            foreach (var element in source) {
+                weights[element] = sum - weights[element];
             }
             return RandomWeightedElement(source, weights);
         }
@@ -41,8 +54,8 @@ namespace Slothsoft.UnityExtensions {
             int totalWeight = weights.Values.Sum();
             int randomWeight = random.Next(totalWeight);
 
-            foreach (var element in weights.Keys) {
-                if (weights[element] > randomWeight) {
+            foreach (var element in weights.Keys.OrderBy(element => weights[element])) {
+                if (weights[element] >= randomWeight) {
                     return element;
                 }
                 randomWeight -= weights[element];

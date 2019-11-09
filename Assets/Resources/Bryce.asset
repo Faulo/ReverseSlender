@@ -12,23 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ce3f8127f72f947b5e2b2be9d2d795, type: 3}
   m_Name: Bryce
   m_EditorClassIdentifier: 
-  speedOverFear:
+  speedOverHurry:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0.1
-      inSlope: 0.9
-      outSlope: 0.9
+      time: -1
+      value: 1
+      inSlope: 1.5
+      outSlope: 1.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 1
-      inSlope: 0.9
-      outSlope: 0.9
+      value: 4
+      inSlope: 1.5
+      outSlope: 1.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -36,4 +36,37 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maximumSpeed: 10
+  speedOverFear:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1
+      value: 1
+      inSlope: 0.5
+      outSlope: 0.5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 0.5
+      outSlope: 0.5
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  baseSpeed: 0.5
+  drawVisionCone: 1
+  numberOfVisionRays: 500
+  visionRayDistance: 100
+  horizontalFieldOfView: 2
+  verticalFieldOfView: 1
+  ghostMultiplier: 10
+  monsterMultiplier: 100
+  collectibleRest: 0.1
+  hideoutRest: 1
