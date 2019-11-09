@@ -15,9 +15,6 @@ public class AudioManagerInspector : Editor
     {
         serializedObject.Update();
         SerializedProperty soundArray = serializedObject.FindProperty("sounds");
-        SerializedProperty sampleAudioSourceProp = serializedObject.FindProperty("sampleSourceFor3DSettings");
-
-        EditorGUILayout.PropertyField(sampleAudioSourceProp);
 
         GUILayout.Label("Sounds", "BoldLabel");
 

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody body;
     private Cinemachine.CinemachineVirtualCamera cam;
+    private SphereCollider sphereCollider;
 
     private Vector3 moveVector;
     private Vector3? startingVectorMovingLeft;
@@ -31,10 +32,47 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 bigMonstaStartPos;
 
+    private AudioSource moveWhisperSource;
+    private const string MOVEWHISPER_SOUNDNAME = "Whispering";
+    private const string AMBIENCE_SOUNDNAME = "Ambience";
+    private const string WIND_SOUNDNAME = "Wind";
+    private const string VANISH_SOUNDNAME = "Vanish";
+    private const string SCARE_SOUNDNAME = "Scare";
+    private float moveWhisperFadeInOutDuration = .5f;
+
+    private bool moving;
+    public bool Moving
+    {
+        get => moving;
+        private set
+        {
+            if (moving == value)
+                return;
+            if (moveWhisperSource == null)
+                moveWhisperSource = AudioManager.Instance.GetAudioSource(MOVEWHISPER_SOUNDNAME);
+            moving = value;
+            if (moving == true)
+            {
+                if (moveWhisperSource.isPlaying == false)
+                    moveWhisperSource.Play();
+                moveWhisperSource.volume = 0f;
+                moveWhisperSource.LerpVolume(AudioManager.Instance.GetOriginalVolume(MOVEWHISPER_SOUNDNAME), moveWhisperFadeInOutDuration, this);
+            }
+            else
+            {
+                moveWhisperSource.LerpVolume(0f, moveWhisperFadeInOutDuration, this);
+            }
+        }
+    }
+
+    [Header("Controls")]
+    [SerializeField] private bool alternativeControls;
+
     private void Awake()
     {
         body = GetComponent<Rigidbody>();
         cam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
+        sphereCollider = GetComponent<SphereCollider>();
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         ghostVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
@@ -60,30 +98,47 @@ public class PlayerController : MonoBehaviour
         {
             bigMonsterVFX.transform.position = Vector3.Lerp(bigMonsterVFX.transform.position, transform.position, bigMonstaLerpSpeed);
         }
+
+        if (moveWhisperSource == null)
+            moveWhisperSource = AudioManager.Instance.GetAudioSource(MOVEWHISPER_SOUNDNAME);
+
+        Moving = moveVector.magnitude > 0;
+
     }
 
     private void FixedUpdate()
     {
         HandleMovement();
         ghostVFX.transform.position = Vector3.Lerp(ghostVFX.transform.position, transform.position, ghostVFXLerpSpeed);
+        sphereCollider.center = transform.InverseTransformPoint(ghostVFX.transform.position) * .3f;
     }
 
     private void DoSomeScaring()
     {
+        InScareMode = true;
         bigMonsterVFX.SendEvent(BIGMONSTERSCARE_EVENTNAME);
         ghostVFX.SendEvent(BIGMONSTERSCARE_EVENTNAME);
-        InScareMode = true;
         bigMonstaStartPos = transform.position + (cam.transform.position - transform.position).normalized * 6f;
         bigMonsterVFX.transform.position = bigMonstaStartPos;
+        Quaternion targetRotation = new Quaternion();
+        targetRotation.SetLookRotation(cam.transform.forward, Vector3.up);
+        bigMonsterVFX.transform.rotation = targetRotation;
+
+        AudioManager.Instance.PlaySound(SCARE_SOUNDNAME);
+        AudioManager.Instance.GetAudioSource(AMBIENCE_SOUNDNAME).LerpVolume(0.01f, .5f, this);
+        AudioManager.Instance.GetAudioSource(WIND_SOUNDNAME).LerpVolume(0.01f, .5f, this);
     }
 
     private void EndTheScaring()
     {
+        InScareMode = false;
         bigMonsterVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
         ghostVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
-        InScareMode = false;
+        AudioManager.Instance.PlaySound(VANISH_SOUNDNAME);
+        AudioManager.Instance.GetAudioSource(SCARE_SOUNDNAME).LerpVolume(0f, .5f, this);
+        AudioManager.Instance.GetAudioSource(AMBIENCE_SOUNDNAME).LerpVolume(AudioManager.Instance.GetOriginalVolume(AMBIENCE_SOUNDNAME), .5f, this);
+        AudioManager.Instance.GetAudioSource(WIND_SOUNDNAME).LerpVolume(AudioManager.Instance.GetOriginalVolume(WIND_SOUNDNAME), .5f, this);
     }
-
 
     private void GetInput()
     {
@@ -100,15 +155,29 @@ public class PlayerController : MonoBehaviour
             moveVector += -cam.transform.forward;
         if (moveLeft)
         {
-            if (startingVectorMovingLeft.HasValue == false)
-                startingVectorMovingLeft = -cam.transform.right;
-            moveVector += startingVectorMovingLeft.Value;
+            if (alternativeControls)
+            {
+                moveVector += -cam.transform.right;
+            }
+            else
+            {
+                if (startingVectorMovingLeft.HasValue == false)
+                    startingVectorMovingLeft = -cam.transform.right;
+                moveVector += startingVectorMovingLeft.Value;
+            }
         }
         else if (moveRight)
         {
-            if (startingVectorMovingRight.HasValue == false)
-                startingVectorMovingRight = cam.transform.right;
-            moveVector += startingVectorMovingRight.Value;
+            if (alternativeControls)
+            {
+                moveVector += cam.transform.right;
+            }
+            else
+            {
+                if (startingVectorMovingRight.HasValue == false)
+                    startingVectorMovingRight = cam.transform.right;
+                moveVector += startingVectorMovingRight.Value;
+            }
         }
         if (moveLeft == false)
             startingVectorMovingLeft = null;
@@ -120,6 +189,7 @@ public class PlayerController : MonoBehaviour
     {
         if (moveVector.magnitude <= 0.01f)
             return;
+
         Vector3 targetPos = body.position + moveVector.normalized * (moveSpeed * (InScareMode ? scareMoveSpeedModifier : 1f)) * Time.fixedDeltaTime;
         Vector3 newPosition = new Vector3(targetPos.x,
                                           Mathf.Clamp(targetPos.y,
