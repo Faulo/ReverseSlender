@@ -15,6 +15,8 @@ namespace ReverseSlender.AI {
         Animator animator;
         [SerializeField]
         NavMeshAgent agent;
+        [SerializeField]
+        BryceHeartBeat heart;
 
         [Header("Auto-detected fields")]
         [SerializeField]
@@ -80,6 +82,8 @@ namespace ReverseSlender.AI {
 
         void Update() {
             agent.speed = settings.speedOverHurry.Evaluate(hurry) * settings.speedOverFear.Evaluate(fear) * settings.baseSpeed;
+
+            heart.bpm = (int) settings.bpmOverFear.Evaluate(fear);
 
             if (fear > 0) {
                 RecallHideout();
@@ -172,6 +176,7 @@ namespace ReverseSlender.AI {
                 isDying = true;
                 StopMoving();
                 animator.SetTrigger("isDying");
+                heart.alive = false;
             }
         }
         public void StartMovingTo(Vector3 position) {

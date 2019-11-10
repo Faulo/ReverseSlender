@@ -67,7 +67,7 @@ MonoBehaviour:
   horizontalFieldOfView: 2
   verticalFieldOfView: 1
   ghostMultiplier: 10
-  monsterMultiplier: 1000
+  monsterMultiplier: 187
   collectibleRest: 0.1
   fleeRest: 0
   hideoutRest: 2
