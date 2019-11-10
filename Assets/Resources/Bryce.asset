@@ -64,7 +64,7 @@ MonoBehaviour:
   drawVisionCone: 1
   numberOfVisionRays: 500
   visionRayDistance: 100
-  horizontalFieldOfView: 2
+  horizontalFieldOfView: 1
   verticalFieldOfView: 1
   ghostMultiplier: 10
   monsterMultiplier: 187
@@ -98,6 +98,6 @@ MonoBehaviour:
   useFleePoints: 1
   fleePointPrefab: {fileID: 4524731440063355441, guid: d3c1930dd2b45a94aa879f38f925aca6,
     type: 3}
-  fleePointMinDistance: 10
-  fleePointMaxDistance: 25
+  fleePointMinDistance: 21.8
+  fleePointMaxDistance: 30.9
   fleePointTurnabout: 5
