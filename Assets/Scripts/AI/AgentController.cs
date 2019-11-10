@@ -71,11 +71,16 @@ namespace ReverseSlender.AI {
             vision.onNoticePlayer += (PlayerController player, float attention) => {
                 if (player.InScareMode) {
                     AddFear(attention * settings.monsterMultiplier);
-                    if (settings.useFleePoints) {
-                        FleeFrom(player.transform.position);
+                    if (fear > 0) {
+                        if (hideoutMemory.Count > 0) {
+                            RecallHideout();
+                        } else {
+                            FleeFrom(player.transform.position);
+                        }
                     }
                 } else {
                     AddHurry(attention * settings.ghostMultiplier);
+                    player.attention += attention * settings.stunMultiplier;
                 }
             };
         }
@@ -85,9 +90,7 @@ namespace ReverseSlender.AI {
 
             heart.bpm = (int) settings.bpmOverFear.Evaluate(fear);
 
-            if (fear > 0) {
-                RecallHideout();
-            }
+            
 
             if (Mathf.Approximately(fear, 1)) {
                 Die();
@@ -188,7 +191,10 @@ namespace ReverseSlender.AI {
             agent.isStopped = true;
         }
         public void FleeFrom(Vector3 position) {
-            if (goalType != GoalType.Hideout && goalType != GoalType.FleePoint) {
+            if (!settings.useFleePoints) {
+                return;
+            }
+            if (goal == null || goalType == GoalType.Collectible) {
                 Vector3 target;
                 RaycastHit hit;
                 do {

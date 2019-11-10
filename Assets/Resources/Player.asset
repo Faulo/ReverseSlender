@@ -16,7 +16,7 @@ MonoBehaviour:
   scareMoveSpeedModifier: 0.5
   maxDistanceAboveGround: 6
   minDistanceAboveGround: 3
+  stunThreshold: 0.5
+  attentionDecay: 1
   ghostVFXLerpSpeed: 0.015
   bigMonstaLerpSpeed: 0.05
-  ghostVFX: {fileID: 0}
-  bigMonsterVFX: {fileID: 0}

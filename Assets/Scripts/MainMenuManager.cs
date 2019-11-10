@@ -7,7 +7,9 @@ public class MainMenuManager : MonoBehaviour
 {
 
     public AudioSource audioSource;
-    public AudioClip audioClip;
+    public AudioClip audioClipStart;
+    public AudioClip audioClipClick;
+    public AudioClip audioClipHover;
     
     public void PressStart ()
     {
@@ -20,9 +22,18 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void PlaySound ()
+    public void PlaySoundStart ()
     {
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        audioSource.PlayOneShot(audioClipStart);
+    }
+
+    public void PlaySoundClick()
+    {
+        audioSource.PlayOneShot(audioClipClick);
+    }
+
+    public void PlayHoverSound()
+    {
+        audioSource.PlayOneShot(audioClipHover);
     }
 }
