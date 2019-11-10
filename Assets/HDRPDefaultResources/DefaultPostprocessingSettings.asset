@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   components:
   - {fileID: 2926520594555130314}
-  - {fileID: 4291193248687608038}
+  - {fileID: 3327706416602848983}
   - {fileID: 1591912495330335307}
 --- !u!114 &1591912495330335307
 MonoBehaviour:
@@ -133,7 +133,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1
     min: 0.001
---- !u!114 &4291193248687608038
+--- !u!114 &3327706416602848983
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,11 +149,11 @@ MonoBehaviour:
   m_AdvancedMode: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.042
+    m_Value: 0
     min: 0
     max: 1
   scatter:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.7
     min: 0
     max: 1
@@ -167,7 +167,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: {fileID: 0}
   dirtIntensity:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
     min: 0
   highQualityFiltering:
