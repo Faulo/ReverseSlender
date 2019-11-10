@@ -23,13 +23,19 @@ namespace ReverseSlender.AI {
         public float verticalFieldOfView;
 
         [Header("Player Interaction")]
-        [Range(0, 100), Tooltip("How much Ghost-Avatar scares Bryce")]
+        [Range(0, 1000), Tooltip("How much Ghost-Avatar scares Bryce")]
         public float ghostMultiplier;
-        [Range(0, 100), Tooltip("How much Monster-Avatar scares Bryce")]
+        [Range(0, 1000), Tooltip("How much Monster-Avatar scares Bryce")]
         public float monsterMultiplier;
         [Range(0, 2), Tooltip("How much collecting gems restores sanity.")]
         public float collectibleRest;
+        [Range(0, 2), Tooltip("How much successfully fleeing randomly restores sanity.")]
+        public float fleeRest;
         [Range(0, 2), Tooltip("How much praying restores sanity.")]
         public float hideoutRest;
+        [Tooltip("Prefab to spawn when randomly fleeing.")]
+        public Transform fleePointPrefab;
+        [Range(0, 100), Tooltip("Distance to flee when spotting Monster-Avatar.")]
+        public float fleePointDistance;
     }
 }

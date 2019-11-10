@@ -1,5 +1,5 @@
 ﻿using Slothsoft.UnityExtensions;
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,11 +68,7 @@ namespace ReverseSlender.AI {
             vision.onNoticePlayer += (PlayerController player, float attention) => {
                 if (player.InScareMode) {
                     AddFear(attention * settings.monsterMultiplier);
-                    if (hideoutMemory.Count == 0 && fear == 1) {
-                        Die();
-                    } else {
-                        RecallHideout();
-                    }
+                    FleeFrom(player.transform.position);
                 } else {
                     AddHurry(attention * settings.ghostMultiplier);
                 }
@@ -81,6 +77,14 @@ namespace ReverseSlender.AI {
 
         void Update() {
             agent.speed = settings.speedOverHurry.Evaluate(hurry) * settings.speedOverFear.Evaluate(fear) * settings.baseSpeed;
+
+            if (fear > 0) {
+                RecallHideout();
+            }
+
+            if (fear == 1) {
+                Die();
+            }
 
             animator.SetFloat("hurry", hurry);
             animator.SetFloat("fear", fear);
@@ -102,6 +106,9 @@ namespace ReverseSlender.AI {
                         AddFear(-settings.collectibleRest);
                         ForgetCollectible(goal.GetComponent<Collectible>());
                         break;
+                    case GoalType.FleePoint:
+                        AddFear(-settings.fleeRest);
+                        break;
                     case GoalType.Hideout:
                         AddFear(-settings.hideoutRest);
                         ForgetHideout(goal.GetComponent<Hideout>());
@@ -120,10 +127,12 @@ namespace ReverseSlender.AI {
         }
         public void RecallCollectible() {
             if (collectiblesMemory.Count > 0 && !animator.GetBool("hasGoal")) {
-                goal = collectiblesMemory
-                    .Select(collectible => collectible.transform)
-                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
-                goalType = GoalType.Collectible;
+                SetGoal(
+                    collectiblesMemory
+                        .Select(collectible => collectible.transform)
+                        .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position))), 
+                    GoalType.Collectible
+                );
             }
         }
         public void ForgetCollectible(Collectible collectible) {
@@ -139,10 +148,12 @@ namespace ReverseSlender.AI {
         }
         public void RecallHideout() {
             if (hideoutMemory.Count > 0 && goalType != GoalType.Hideout) {
-                goal = hideoutMemory
-                    .Select(hideout => hideout.transform)
-                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
-                goalType = GoalType.Hideout;
+                SetGoal(
+                    hideoutMemory
+                        .Select(hideout => hideout.transform)
+                        .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position))),
+                    GoalType.Hideout
+                );
             }
         }
         public void ForgetHideout(Hideout hideout) {
@@ -161,6 +172,28 @@ namespace ReverseSlender.AI {
         public void StopMoving() {
             agent.destination = agent.transform.position;
             agent.isStopped = true;
+        }
+        public void FleeFrom(Vector3 position) {
+            if (goalType != GoalType.Hideout && goalType != GoalType.FleePoint) {
+                position = transform.position + (transform.position - position).normalized * settings.fleePointDistance;
+
+                if (Physics.Raycast(position + 1000 * Vector3.up, - Vector3.up, out RaycastHit hit)) {
+                    position = hit.point;
+                }
+                SetGoal(Instantiate(settings.fleePointPrefab, position, Quaternion.identity), GoalType.FleePoint);
+            }
+        }
+
+        public void SetGoal(Transform newGoal, GoalType newGoalType) {
+            if (goal) {
+                switch (goalType) {
+                    case GoalType.FleePoint:
+                        Destroy(goal.gameObject);
+                        break;
+                }
+            }
+            goal = newGoal;
+            goalType = newGoalType;
         }
     }
 }
