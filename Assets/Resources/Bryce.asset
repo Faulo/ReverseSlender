@@ -66,6 +66,7 @@ MonoBehaviour:
   visionRayDistance: 100
   horizontalFieldOfView: 1
   verticalFieldOfView: 1
+  stunMultiplier: 1000
   ghostMultiplier: 10
   monsterMultiplier: 187
   collectibleRest: 0.1
