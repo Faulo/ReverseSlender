@@ -109,6 +109,9 @@ public class PlayerController : MonoBehaviour
         if (InScareMode)
         {
             bigMonsterVFX.transform.position = Vector3.Lerp(bigMonsterVFX.transform.position, transform.position, settings.bigMonstaLerpSpeed);
+            Quaternion targetRotation = new Quaternion();
+            targetRotation.SetLookRotation(cam.transform.forward, Vector3.up);
+            bigMonsterVFX.transform.rotation = targetRotation;
         }
 
         if (moveWhisperSource == null)
@@ -132,9 +135,7 @@ public class PlayerController : MonoBehaviour
         ghostVFX.SendEvent(BIGMONSTERSCARE_EVENTNAME);
         bigMonstaStartPos = transform.position + (cam.transform.position - transform.position).normalized * 6f;
         bigMonsterVFX.transform.position = bigMonstaStartPos;
-        Quaternion targetRotation = new Quaternion();
-        targetRotation.SetLookRotation(cam.transform.forward, Vector3.up);
-        bigMonsterVFX.transform.rotation = targetRotation;
+
 
         AudioManager.Instance.PlaySound(SCARE_SOUNDNAME);
         AudioManager.Instance.GetAudioSource(AMBIENCE_SOUNDNAME).LerpVolume(0.01f, .5f, this);
