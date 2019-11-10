@@ -190,7 +190,7 @@ namespace ReverseSlender.AI {
                 } while (!Physics.Raycast(target + 1000 * Vector3.up, -Vector3.up, out hit));
                 target = hit.point;
 
-                SetGoal(Instantiate(settings.fleePointPrefab, position, Quaternion.identity), GoalType.FleePoint);
+                SetGoal(Instantiate(settings.fleePointPrefab, target, Quaternion.identity), GoalType.FleePoint);
             }
         }
 

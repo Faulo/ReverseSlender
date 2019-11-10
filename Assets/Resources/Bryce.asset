@@ -73,4 +73,6 @@ MonoBehaviour:
   hideoutRest: 2
   fleePointPrefab: {fileID: 4524731440063355441, guid: d3c1930dd2b45a94aa879f38f925aca6,
     type: 3}
-  fleePointDistance: 5
+  fleePointMinDistance: 10
+  fleePointMaxDistance: 100
+  fleePointTurnabout: 5
