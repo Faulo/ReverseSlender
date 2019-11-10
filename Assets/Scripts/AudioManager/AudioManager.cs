@@ -12,10 +12,25 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource oneShotSource;
 
+    private const float minTimeBetweenSounds = 15f;
+    private const float maxTimeBetweenSounds = 45f;
+    private float nextTimeUntilRandomSound;
+
+    private float randomSoundTimer;
+
+    private readonly string[] randomSoundNames = new string[]
+    {
+        "DistantFox",
+        "DistantWolf",
+        "DistantScream1",
+        "DistantScream2",
+        "Roar",
+    };
+
     private void Awake()
     {
         instance = this;
-
+        nextTimeUntilRandomSound = UnityEngine.Random.Range(minTimeBetweenSounds, maxTimeBetweenSounds);
         oneShotSource = gameObject.AddComponent<AudioSource>();
 
         foreach (Sound s in sounds)
@@ -41,17 +56,12 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        randomSoundTimer += Time.deltaTime;
+        if (randomSoundTimer >= nextTimeUntilRandomSound)
         {
-            PlaySound("EnemyKilled");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            PlaySound("EnemyStunned");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            PlaySound("PlayerHit");
+            PlayRandomSound(randomSoundNames);
+            nextTimeUntilRandomSound = UnityEngine.Random.Range(minTimeBetweenSounds, maxTimeBetweenSounds);
+            randomSoundTimer = 0f;
         }
     }
 
