@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Experimental.VFX;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
     [SerializeField]
     private PlayerSettings settings = default;
     [SerializeField]
@@ -74,6 +75,16 @@ public class PlayerController : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         ghostVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
+
+        CheckForGround();
+        Vector3 targetPos = body.position;
+        Vector3 newPosition = new Vector3(targetPos.x,
+                                  Mathf.Clamp(targetPos.y,
+                                              terrainHeightUnderPlayer + settings.minDistanceAboveGround,
+                                              terrainHeightUnderPlayer + settings.maxDistanceAboveGround),
+                                  targetPos.z);
+        body.MovePosition(newPosition);
+        ghostVFX.transform.position = body.position;
     }
 
     private void Update()
@@ -208,7 +219,6 @@ public class PlayerController : MonoBehaviour {
     private void CheckForGround()
     {
         float rayLength = Mathf.Infinity;
-        Debug.DrawRay(transform.position, Vector3.down * rayLength, Color.red);
         if (Physics.RaycastNonAlloc(transform.position, Vector3.down, groundHits, rayLength) > 0)
             terrainHeightUnderPlayer = groundHits[0].point.y;
     }
