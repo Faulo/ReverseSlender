@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Experimental.VFX;
 
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
     [SerializeField]
     private PlayerSettings settings = default;
     [SerializeField]
@@ -28,6 +28,14 @@ public class PlayerController : MonoBehaviour
 
     public bool InScareMode { get; private set; }
 
+    public float attention {
+        get => attentionCache;
+        set => attentionCache = Mathf.Clamp01(value);
+    }
+    [SerializeField, Range(0, 1)]
+    private float attentionCache;
+    private bool canScare => attention < settings.stunThreshold;
+
     private Vector3 bigMonstaStartPos;
 
     private AudioSource moveWhisperSource;
@@ -39,36 +47,29 @@ public class PlayerController : MonoBehaviour
     private float moveWhisperFadeInOutDuration = .5f;
 
     private bool moving;
-    public bool Moving
-    {
+    public bool Moving {
         get => moving;
-        private set
-        {
+        private set {
             if (moving == value)
                 return;
             if (moveWhisperSource == null)
                 moveWhisperSource = AudioManager.Instance.GetAudioSource(MOVEWHISPER_SOUNDNAME);
             moving = value;
-            if (moving == true)
-            {
+            if (moving == true) {
                 if (moveWhisperSource.isPlaying == false)
                     moveWhisperSource.Play();
                 moveWhisperSource.volume = 0f;
                 moveWhisperSource.LerpVolume(AudioManager.Instance.GetOriginalVolume(MOVEWHISPER_SOUNDNAME), moveWhisperFadeInOutDuration, this);
-            }
-            else
-            {
+            } else {
                 moveWhisperSource.LerpVolume(0f, moveWhisperFadeInOutDuration, this);
             }
         }
     }
 
     private bool alternativeControls = true;
-
     private const string SCAREBUTTON_NAME = "Scare";
 
-    private void Awake()
-    {
+    private void Awake() {
         body = GetComponent<Rigidbody>();
         cam = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         sphereCollider = GetComponent<SphereCollider>();
@@ -87,8 +88,7 @@ public class PlayerController : MonoBehaviour
         ghostVFX.transform.position = body.position;
     }
 
-    private void Update()
-    {
+    private void Update() {
         GetInput();
         CheckForGround();
         ghostVFX.SetVector3(GHOST_ATTRACTIVETARGETPOSITION_NAME, ghostVFX.transform.InverseTransformPoint(body.position));
@@ -96,18 +96,15 @@ public class PlayerController : MonoBehaviour
         bool startScare = Input.GetButtonDown(SCAREBUTTON_NAME) || (Input.GetAxis(SCAREBUTTON_NAME) >= .8f && InScareMode == false);
         bool endScare = Input.GetButtonUp(SCAREBUTTON_NAME) || (Input.GetAxis(SCAREBUTTON_NAME) < .5f && InScareMode == true);
 
-        if (startScare)
-        {
+        if (startScare && canScare) {
             DoSomeScaring();
         }
 
-        if (endScare)
-        {
+        if (endScare) {
             EndTheScaring();
         }
 
-        if (InScareMode)
-        {
+        if (InScareMode) {
             bigMonsterVFX.transform.position = Vector3.Lerp(bigMonsterVFX.transform.position, transform.position, settings.bigMonstaLerpSpeed);
             Quaternion targetRotation = new Quaternion();
             targetRotation.SetLookRotation(cam.transform.forward, Vector3.up);
@@ -119,17 +116,16 @@ public class PlayerController : MonoBehaviour
 
         Moving = moveVector.magnitude > 0;
 
+        attention = Mathf.Lerp(attention, 0, Time.deltaTime * settings.attentionDecay);
     }
 
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         HandleMovement();
         ghostVFX.transform.position = Vector3.Lerp(ghostVFX.transform.position, transform.position, settings.ghostVFXLerpSpeed);
         sphereCollider.center = transform.InverseTransformPoint(ghostVFX.transform.position) * .3f;
     }
 
-    private void DoSomeScaring()
-    {
+    private void DoSomeScaring() {
         InScareMode = true;
         bigMonsterVFX.SendEvent(BIGMONSTERSCARE_EVENTNAME);
         ghostVFX.SendEvent(BIGMONSTERSCARE_EVENTNAME);
@@ -142,8 +138,7 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.GetAudioSource(WIND_SOUNDNAME).LerpVolume(0.01f, .5f, this);
     }
 
-    private void EndTheScaring()
-    {
+    private void EndTheScaring() {
         InScareMode = false;
         bigMonsterVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
         ghostVFX.SendEvent(BIGMONSTERSTOPSCARE_EVENTNAME);
@@ -153,8 +148,7 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.GetAudioSource(WIND_SOUNDNAME).LerpVolume(AudioManager.Instance.GetOriginalVolume(WIND_SOUNDNAME), .5f, this);
     }
 
-    private void GetInput()
-    {
+    private void GetInput() {
         moveVector = new Vector3();
 
         float inputXAxis = Input.GetAxis("Horizontal");
@@ -171,27 +165,18 @@ public class PlayerController : MonoBehaviour
             moveVector += cam.transform.forward;
         else if (moveBack)
             moveVector += -cam.transform.forward;
-        if (moveLeft)
-        {
-            if (alternativeControls)
-            {
+        if (moveLeft) {
+            if (alternativeControls) {
                 moveVector += -cam.transform.right;
-            }
-            else
-            {
+            } else {
                 if (startingVectorMovingLeft.HasValue == false)
                     startingVectorMovingLeft = -cam.transform.right;
                 moveVector += startingVectorMovingLeft.Value;
             }
-        }
-        else if (moveRight)
-        {
-            if (alternativeControls)
-            {
+        } else if (moveRight) {
+            if (alternativeControls) {
                 moveVector += cam.transform.right;
-            }
-            else
-            {
+            } else {
                 if (startingVectorMovingRight.HasValue == false)
                     startingVectorMovingRight = cam.transform.right;
                 moveVector += startingVectorMovingRight.Value;
@@ -203,8 +188,7 @@ public class PlayerController : MonoBehaviour
             startingVectorMovingRight = null;
     }
 
-    private void HandleMovement()
-    {
+    private void HandleMovement() {
         if (moveVector.magnitude <= 0.01f)
             return;
 
@@ -217,8 +201,7 @@ public class PlayerController : MonoBehaviour
         body.MovePosition(newPosition);
     }
 
-    private void CheckForGround()
-    {
+    private void CheckForGround() {
         float rayLength = Mathf.Infinity;
         if (Physics.RaycastNonAlloc(transform.position, Vector3.down, groundHits, rayLength) > 0)
             terrainHeightUnderPlayer = groundHits[0].point.y;
