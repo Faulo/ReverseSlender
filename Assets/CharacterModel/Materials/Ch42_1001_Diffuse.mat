@@ -242,7 +242,7 @@ Material:
     - _UVBase: 0
     - _UVDetail: 0
     - _UVEmissive: 0
-    - _UpperBodyMinAlpha: 0.96000004
+    - _UpperBodyMinAlpha: 0.987
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
     - _ZTestDepthEqualForOpaque: 2
