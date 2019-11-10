@@ -6,10 +6,10 @@ namespace ReverseSlender.AI {
     [CreateAssetMenu(fileName = "New Agent Settings", menuName = "Gameplay/Agent Settings", order = 1)]
     public class AgentSettings : ScriptableObject {
         [Header("Movement")]
-        public AnimationCurve speedOverHurry;
-        public AnimationCurve speedOverFear;
         [Range(0, 20)]
         public float baseSpeed;
+        public AnimationCurve speedOverHurry;
+        public AnimationCurve speedOverFear;
 
         [Header("Vision")]
         public bool drawVisionCone;
@@ -35,13 +35,15 @@ namespace ReverseSlender.AI {
         public float hideoutRest;
 
         [Header("Flee Point Generation")]
-        [Tooltip("Prefab to spawn when randomly fleeing.")]
+        [Tooltip("Whether or not to flee at all when spotting the player in monster-form.")]
+        public bool useFleePoints;
+        [Tooltip("Prefab to spawn when fleeing.")]
         public Transform fleePointPrefab;
-        [Range(0, 100), Tooltip("Minimum distance to flee when spotting Monster-Avatar.")]
+        [Range(0, 100), Tooltip("Minimum distance to flee when spotting monster-form.")]
         public float fleePointMinDistance;
-        [Range(0, 100), Tooltip("Maximum distance to flee when spotting Monster-Avatar.")]
+        [Range(0, 100), Tooltip("Maximum distance to flee when spotting monster-form.")]
         public float fleePointMaxDistance;
-        [Range(0, 10), Tooltip("How much fleeing should resemble a straight line away from the avatar.")]
+        [Range(0, 10), Tooltip("How much fleeing should resemble a straight line away from the player.")]
         public float fleePointTurnabout;
     }
 }
