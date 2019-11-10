@@ -481,12 +481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be091c105934fb4cacac840da8bba3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  scareMoveSpeedModifier: 0.5
-  maxDistanceAboveGround: 6
-  minDistanceAboveGround: 3
-  ghostVFXLerpSpeed: 0.015
-  bigMonstaLerpSpeed: 0.05
+  settings: {fileID: 11400000, guid: ef3d445e6926e5842be7aeaaaea89b83, type: 2}
   ghostVFX: {fileID: 1375873844}
   bigMonsterVFX: {fileID: 1289812112}
 --- !u!54 &3710631694207941969

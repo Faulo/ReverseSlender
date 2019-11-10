@@ -69,7 +69,9 @@ namespace ReverseSlender.AI {
             vision.onNoticePlayer += (PlayerController player, float attention) => {
                 if (player.InScareMode) {
                     AddFear(attention * settings.monsterMultiplier);
-                    FleeFrom(player.transform.position);
+                    if (settings.useFleePoints) {
+                        FleeFrom(player.transform.position);
+                    }
                 } else {
                     AddHurry(attention * settings.ghostMultiplier);
                 }
