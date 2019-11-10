@@ -67,6 +67,12 @@ MonoBehaviour:
   horizontalFieldOfView: 2
   verticalFieldOfView: 1
   ghostMultiplier: 10
-  monsterMultiplier: 100
+  monsterMultiplier: 1000
   collectibleRest: 0.1
-  hideoutRest: 1
+  fleeRest: 0
+  hideoutRest: 2
+  fleePointPrefab: {fileID: 4524731440063355441, guid: d3c1930dd2b45a94aa879f38f925aca6,
+    type: 3}
+  fleePointMinDistance: 10
+  fleePointMaxDistance: 100
+  fleePointTurnabout: 5

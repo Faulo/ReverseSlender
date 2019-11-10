@@ -1,5 +1,5 @@
 ﻿using Slothsoft.UnityExtensions;
-using System;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +54,7 @@ namespace ReverseSlender.AI {
             }
         }
         private bool touchesCollectible => goalType == GoalType.Collectible && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
+        private bool touchesFleePoint => goalType == GoalType.FleePoint && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
         private bool touchesHideout => goalType == GoalType.Hideout && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
 
         private bool isDying;
@@ -68,11 +69,7 @@ namespace ReverseSlender.AI {
             vision.onNoticePlayer += (PlayerController player, float attention) => {
                 if (player.InScareMode) {
                     AddFear(attention * settings.monsterMultiplier);
-                    if (hideoutMemory.Count == 0 && fear == 1) {
-                        Die();
-                    } else {
-                        RecallHideout();
-                    }
+                    FleeFrom(player.transform.position);
                 } else {
                     AddHurry(attention * settings.ghostMultiplier);
                 }
@@ -82,16 +79,26 @@ namespace ReverseSlender.AI {
         void Update() {
             agent.speed = settings.speedOverHurry.Evaluate(hurry) * settings.speedOverFear.Evaluate(fear) * settings.baseSpeed;
 
+            if (fear > 0) {
+                RecallHideout();
+            }
+
+            if (Mathf.Approximately(fear, 1)) {
+                Die();
+            }
+
             animator.SetFloat("hurry", hurry);
             animator.SetFloat("fear", fear);
             animator.SetBool("hasGoal", hasGoal);
             animator.SetBool("touchesCollectible", touchesCollectible);
+            animator.SetBool("touchesFleePoint", touchesFleePoint);
             animator.SetBool("touchesHideout", touchesHideout);
         }
 
         public void LookAtGoal() {
             if (goal) {
-                transform.LookAt(goal);
+                Vector3 direction = (goal.position - transform.position).normalized;
+                transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
             }
         }
 
@@ -101,6 +108,9 @@ namespace ReverseSlender.AI {
                     case GoalType.Collectible:
                         AddFear(-settings.collectibleRest);
                         ForgetCollectible(goal.GetComponent<Collectible>());
+                        break;
+                    case GoalType.FleePoint:
+                        AddFear(-settings.fleeRest);
                         break;
                     case GoalType.Hideout:
                         AddFear(-settings.hideoutRest);
@@ -120,10 +130,12 @@ namespace ReverseSlender.AI {
         }
         public void RecallCollectible() {
             if (collectiblesMemory.Count > 0 && !animator.GetBool("hasGoal")) {
-                goal = collectiblesMemory
-                    .Select(collectible => collectible.transform)
-                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
-                goalType = GoalType.Collectible;
+                SetGoal(
+                    collectiblesMemory
+                        .Select(collectible => collectible.transform)
+                        .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position))), 
+                    GoalType.Collectible
+                );
             }
         }
         public void ForgetCollectible(Collectible collectible) {
@@ -139,10 +151,12 @@ namespace ReverseSlender.AI {
         }
         public void RecallHideout() {
             if (hideoutMemory.Count > 0 && goalType != GoalType.Hideout) {
-                goal = hideoutMemory
-                    .Select(hideout => hideout.transform)
-                    .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position)));
-                goalType = GoalType.Hideout;
+                SetGoal(
+                    hideoutMemory
+                        .Select(hideout => hideout.transform)
+                        .RandomWeightedElementDescending(t => Mathf.CeilToInt(Vector3.Distance(t.position, transform.position))),
+                    GoalType.Hideout
+                );
             }
         }
         public void ForgetHideout(Hideout hideout) {
@@ -158,9 +172,38 @@ namespace ReverseSlender.AI {
                 animator.SetTrigger("isDying");
             }
         }
+        public void StartMovingTo(Vector3 position) {
+            agent.destination = position;
+            agent.isStopped = false;
+        }
         public void StopMoving() {
             agent.destination = agent.transform.position;
             agent.isStopped = true;
+        }
+        public void FleeFrom(Vector3 position) {
+            if (goalType != GoalType.Hideout && goalType != GoalType.FleePoint) {
+                Vector3 target;
+                RaycastHit hit;
+                do {
+                    var direction = (Random.insideUnitSphere + settings.fleePointTurnabout * (transform.position - position).normalized).normalized;
+                    target = transform.position + direction * Random.Range(settings.fleePointMinDistance, settings.fleePointMaxDistance);
+                } while (!Physics.Raycast(target + 1000 * Vector3.up, -Vector3.up, out hit));
+                target = hit.point;
+
+                SetGoal(Instantiate(settings.fleePointPrefab, target, Quaternion.identity), GoalType.FleePoint);
+            }
+        }
+
+        public void SetGoal(Transform newGoal, GoalType newGoalType) {
+            if (goal) {
+                switch (goalType) {
+                    case GoalType.FleePoint:
+                        Destroy(goal.gameObject);
+                        break;
+                }
+            }
+            goal = newGoal;
+            goalType = newGoalType;
         }
     }
 }
