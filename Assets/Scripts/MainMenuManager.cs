@@ -11,7 +11,7 @@ public class MainMenuManager : MonoBehaviour
     
     public void PressStart ()
     {
-        SceneManager.LoadScene("SvenScene");
+        SceneManager.LoadScene("Terrain_mitNavMeshAgent");
     }
 
     public void PressEndGame()
