@@ -14,9 +14,15 @@ public class PlayerSettings : ScriptableObject {
     [Range(0, 100)]
     public float minDistanceAboveGround = 3f;
 
+    [Header("Bryce Interaction")]
+    [Range(0, 1), Tooltip("How much of Bryce's attention prevents monster form.")]
+    public float stunThreshold;
+    [Range(0, 20), Tooltip("How quickly Bryce's attention decays, enabling monster form again.")]
+    public float attentionDecay;
+
     [Header("VFX")]
-    [Range(.01f, .25f), Tooltip("How quickly something something ghost-form.")]
+    [Range(.01f, .25f), Tooltip("How quickly something something ghost form.")]
     public float ghostVFXLerpSpeed = 0.015f;
-    [Range(.01f, .25f), Tooltip("How quickly something something monster-form.")]
+    [Range(.01f, .25f), Tooltip("How quickly something something monster form.")]
     public float bigMonstaLerpSpeed = 0.05f;
 }

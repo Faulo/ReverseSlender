@@ -200,14 +200,53 @@ MonoBehaviour:
     is3DSound: 0
     parentObject: {fileID: 0}
     source: {fileID: 0}
-  - _name: Roar
+  - _name: Crow
     mixerGroup: {fileID: 0}
-    clip: {fileID: 8300000, guid: 699368ff5a82dea4e99c7aeb782fe9f8, type: 3}
+    clip: {fileID: 8300000, guid: 70410010d3513254bbf1b430a8837326, type: 3}
     volume: 0.1
     pitch: 1
     randomizePitch: 1
-    pitchRange: 0.1
+    pitchRange: 0.15
     loop: 1
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: Roar
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 699368ff5a82dea4e99c7aeb782fe9f8, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomizePitch: 0
+    pitchRange: 0
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: Heartbeat
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 5c9beac9537b1924db774c24203034c6, type: 3}
+    volume: 1
+    pitch: 1
+    randomizePitch: 0
+    pitchRange: 0
+    loop: 0
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}
+  - _name: DeathChoir
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: be6931605eaf9ea4f89236e388dd3577, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomizePitch: 0
+    pitchRange: 0
+    loop: 0
     playOnAwake: 0
     ignoreGamePaused: 0
     is3DSound: 0

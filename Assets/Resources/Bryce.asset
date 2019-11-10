@@ -66,11 +66,36 @@ MonoBehaviour:
   visionRayDistance: 100
   horizontalFieldOfView: 1
   verticalFieldOfView: 1
+  stunMultiplier: 1000
   ghostMultiplier: 10
   monsterMultiplier: 187
   collectibleRest: 0.1
   fleeRest: 0
   hideoutRest: 2
+  bpmOverFear:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -1
+      value: 60
+      inSlope: 70
+      outSlope: 70
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 200
+      inSlope: 70
+      outSlope: 70
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   useFleePoints: 1
   fleePointPrefab: {fileID: 4524731440063355441, guid: d3c1930dd2b45a94aa879f38f925aca6,
     type: 3}

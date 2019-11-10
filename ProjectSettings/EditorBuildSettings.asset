@@ -6,12 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/MainMenuAnimated.unity
     guid: ff09f26bf2d85244f98882ab44683e46
   - enabled: 1
-    path: Assets/Scenes/SvenScene.unity
-    guid: f399f1f3c7536404194136a09b3c6ca3
-  - enabled: 0
-    path: Assets/Scenes/samplescene.unity
-    guid: cbfe36cfddfde964d9dfce63a355d5dd
+    path: Assets/Scenes/Terrain_mitNavMeshAgent.unity
+    guid: 57d1bb77599f3a040b7e5a5cccb55978
   m_configObjects: {}
