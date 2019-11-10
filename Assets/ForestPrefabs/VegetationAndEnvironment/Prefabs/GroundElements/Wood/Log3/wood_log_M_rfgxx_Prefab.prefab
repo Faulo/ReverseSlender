@@ -394,42 +394,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 4300006, guid: af88e8d01a5b34442898a6f2cc1d33e4, type: 3}
---- !u!114 &114025931696758022
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1801125779684094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7189081d240a93459739cdf47c37590, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: {fileID: 23152133197321700}
---- !u!114 &114300351666810266
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1116296609552678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7189081d240a93459739cdf47c37590, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: {fileID: 23152133197321700}
---- !u!114 &114707291401783902
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1524936541498374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7189081d240a93459739cdf47c37590, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: {fileID: 23152133197321700}
 --- !u!205 &205906310629136470
 LODGroup:
   m_ObjectHideFlags: 1

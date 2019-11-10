@@ -2188,24 +2188,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1788424484517410}
   m_Mesh: {fileID: 4300004, guid: 6804b173bfe02c847ba5dbcad60c1c54, type: 3}
---- !u!114 &114676099673410220
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1772891077483634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6baae22fb881044d97e4d46be94b4eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnCandidates:
-  - {fileID: 1196856363808192}
-  - {fileID: 1224933927968446}
-  - {fileID: 1788424484517410}
-  - {fileID: 1734776685531936}
-  - {fileID: 1087215293815738}
-  - {fileID: 1925480793159584}
 --- !u!136 &136000399683525820
 CapsuleCollider:
   m_ObjectHideFlags: 1
