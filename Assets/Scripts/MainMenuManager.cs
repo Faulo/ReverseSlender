@@ -7,7 +7,8 @@ public class MainMenuManager : MonoBehaviour
 {
 
     public AudioSource audioSource;
-    public AudioClip audioClip;
+    public AudioClip audioClipStart;
+    public AudioClip audioClipClick;
     
     public void PressStart ()
     {
@@ -20,9 +21,15 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void PlaySound ()
+    public void PlaySoundStart ()
     {
-        audioSource.clip = audioClip;
+        audioSource.clip = audioClipStart;
+        audioSource.Play();
+    }
+
+    public void PlaySoundClick()
+    {
+        audioSource.clip = audioClipClick;
         audioSource.Play();
     }
 }
