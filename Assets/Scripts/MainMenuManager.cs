@@ -5,14 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+
+    public AudioSource audioSource;
+    public AudioClip audioClip;
+    
     public void PressStart ()
     {
-        SceneManager.LoadScene("samplescene");
+        SceneManager.LoadScene("SvenScene");
     }
 
     public void PressEndGame()
     {
         Debug.Log("Quit!");
         Application.Quit();
+    }
+
+    public void PlaySound ()
+    {
+        audioSource.clip = audioClip;
+        audioSource.Play();
     }
 }
