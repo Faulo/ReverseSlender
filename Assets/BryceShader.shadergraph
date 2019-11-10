@@ -16,7 +16,7 @@
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.Vector1ShaderProperty"
             },
-            "JSONnodeData": "{\n    \"m_Name\": \"UpperBodyMinAlpha\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"3af8911d-9b25-4391-84fe-38cfa4ec5da4\"\n    },\n    \"m_DefaultReferenceName\": \"Vector1_62916DCA\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_Precision\": 1,\n    \"m_Value\": 0.5,\n    \"m_FloatType\": 1,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    },\n    \"m_Hidden\": false\n}"
+            "JSONnodeData": "{\n    \"m_Name\": \"UpperBodyMinAlpha\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"3af8911d-9b25-4391-84fe-38cfa4ec5da4\"\n    },\n    \"m_DefaultReferenceName\": \"Vector1_62916DCA\",\n    \"m_OverrideReferenceName\": \"_UpperBodyMinAlpha\",\n    \"m_Precision\": 1,\n    \"m_Value\": 0.5,\n    \"m_FloatType\": 1,\n    \"m_RangeValues\": {\n        \"x\": 0.0,\n        \"y\": 1.0\n    },\n    \"m_Hidden\": false\n}"
         },
         {
             "typeInfo": {
