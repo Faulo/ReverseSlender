@@ -54,6 +54,7 @@ namespace ReverseSlender.AI {
             }
         }
         private bool touchesCollectible => goalType == GoalType.Collectible && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
+        private bool touchesFleePoint => goalType == GoalType.FleePoint && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
         private bool touchesHideout => goalType == GoalType.Hideout && goal != null && Vector3.Distance(transform.position, goal.position) < agent.stoppingDistance;
 
         private bool isDying;
@@ -82,7 +83,7 @@ namespace ReverseSlender.AI {
                 RecallHideout();
             }
 
-            if (fear == 1) {
+            if (Mathf.Approximately(fear, 1)) {
                 Die();
             }
 
@@ -90,12 +91,14 @@ namespace ReverseSlender.AI {
             animator.SetFloat("fear", fear);
             animator.SetBool("hasGoal", hasGoal);
             animator.SetBool("touchesCollectible", touchesCollectible);
+            animator.SetBool("touchesFleePoint", touchesFleePoint);
             animator.SetBool("touchesHideout", touchesHideout);
         }
 
         public void LookAtGoal() {
             if (goal) {
-                transform.LookAt(goal);
+                Vector3 direction = (goal.position - transform.position).normalized;
+                transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
             }
         }
 
@@ -169,17 +172,24 @@ namespace ReverseSlender.AI {
                 animator.SetTrigger("isDying");
             }
         }
+        public void StartMovingTo(Vector3 position) {
+            agent.destination = position;
+            agent.isStopped = false;
+        }
         public void StopMoving() {
             agent.destination = agent.transform.position;
             agent.isStopped = true;
         }
         public void FleeFrom(Vector3 position) {
             if (goalType != GoalType.Hideout && goalType != GoalType.FleePoint) {
-                position = transform.position + (transform.position - position).normalized * settings.fleePointDistance;
+                Vector3 target;
+                RaycastHit hit;
+                do {
+                    var direction = (Random.insideUnitSphere + settings.fleePointTurnabout * (transform.position - position).normalized).normalized;
+                    target = transform.position + direction * Random.Range(settings.fleePointMinDistance, settings.fleePointMaxDistance);
+                } while (!Physics.Raycast(target + 1000 * Vector3.up, -Vector3.up, out hit));
+                target = hit.point;
 
-                if (Physics.Raycast(position + 1000 * Vector3.up, - Vector3.up, out RaycastHit hit)) {
-                    position = hit.point;
-                }
                 SetGoal(Instantiate(settings.fleePointPrefab, position, Quaternion.identity), GoalType.FleePoint);
             }
         }

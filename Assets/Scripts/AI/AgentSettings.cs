@@ -33,9 +33,15 @@ namespace ReverseSlender.AI {
         public float fleeRest;
         [Range(0, 2), Tooltip("How much praying restores sanity.")]
         public float hideoutRest;
+
+        [Header("Flee Point Generation")]
         [Tooltip("Prefab to spawn when randomly fleeing.")]
         public Transform fleePointPrefab;
-        [Range(0, 100), Tooltip("Distance to flee when spotting Monster-Avatar.")]
-        public float fleePointDistance;
+        [Range(0, 100), Tooltip("Minimum distance to flee when spotting Monster-Avatar.")]
+        public float fleePointMinDistance;
+        [Range(0, 100), Tooltip("Maximum distance to flee when spotting Monster-Avatar.")]
+        public float fleePointMaxDistance;
+        [Range(0, 10), Tooltip("How much fleeing should resemble a straight line away from the avatar.")]
+        public float fleePointTurnabout;
     }
 }
