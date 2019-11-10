@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ce3f8127f72f947b5e2b2be9d2d795, type: 3}
   m_Name: Bryce
   m_EditorClassIdentifier: 
+  baseSpeed: 0.5
   speedOverHurry:
     serializedVersion: 2
     m_Curve:
@@ -60,7 +61,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  baseSpeed: 0.5
   drawVisionCone: 1
   numberOfVisionRays: 500
   visionRayDistance: 100
@@ -71,8 +71,9 @@ MonoBehaviour:
   collectibleRest: 0.1
   fleeRest: 0
   hideoutRest: 2
+  useFleePoints: 0
   fleePointPrefab: {fileID: 4524731440063355441, guid: d3c1930dd2b45a94aa879f38f925aca6,
     type: 3}
   fleePointMinDistance: 10
-  fleePointMaxDistance: 100
+  fleePointMaxDistance: 25
   fleePointTurnabout: 5

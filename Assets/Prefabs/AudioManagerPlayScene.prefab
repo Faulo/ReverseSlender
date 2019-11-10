@@ -200,3 +200,16 @@ MonoBehaviour:
     is3DSound: 0
     parentObject: {fileID: 0}
     source: {fileID: 0}
+  - _name: Roar
+    mixerGroup: {fileID: 0}
+    clip: {fileID: 8300000, guid: 699368ff5a82dea4e99c7aeb782fe9f8, type: 3}
+    volume: 0.1
+    pitch: 1
+    randomizePitch: 1
+    pitchRange: 0.1
+    loop: 1
+    playOnAwake: 0
+    ignoreGamePaused: 0
+    is3DSound: 0
+    parentObject: {fileID: 0}
+    source: {fileID: 0}

@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Experimental.VFX;
 
-public class PlayerController : MonoBehaviour
-{
-    [SerializeField] private float moveSpeed = 300;
-    [SerializeField] private float scareMoveSpeedModifier = .5f;
-    [SerializeField] private float maxDistanceAboveGround = 5f;
-    [SerializeField] private float minDistanceAboveGround = 0f;
+public class PlayerController : MonoBehaviour {
+    [SerializeField]
+    private PlayerSettings settings = default;
+    [SerializeField]
+    private VisualEffect ghostVFX = default;
+    [SerializeField]
+    private VisualEffect bigMonsterVFX = default;
 
-    [SerializeField, Range(.01f, .25f)] private float ghostVFXLerpSpeed = 0.01f;
-    [SerializeField, Range(.01f, .25f)] private float bigMonstaLerpSpeed = 0.01f;
     private float terrainHeightUnderPlayer;
 
     private Rigidbody body;
@@ -22,8 +21,6 @@ public class PlayerController : MonoBehaviour
 
     private RaycastHit[] groundHits = new RaycastHit[1];
 
-    [SerializeField] private VisualEffect ghostVFX;
-    [SerializeField] private VisualEffect bigMonsterVFX;
     private const string GHOST_ATTRACTIVETARGETPOSITION_NAME = "AttractiveTargetPosition";
     private const string BIGMONSTERSCARE_EVENTNAME = "OnScare";
     private const string BIGMONSTERSTOPSCARE_EVENTNAME = "StopScare";
@@ -100,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
         if (InScareMode)
         {
-            bigMonsterVFX.transform.position = Vector3.Lerp(bigMonsterVFX.transform.position, transform.position, bigMonstaLerpSpeed);
+            bigMonsterVFX.transform.position = Vector3.Lerp(bigMonsterVFX.transform.position, transform.position, settings.bigMonstaLerpSpeed);
         }
 
         if (moveWhisperSource == null)
@@ -113,7 +110,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         HandleMovement();
-        ghostVFX.transform.position = Vector3.Lerp(ghostVFX.transform.position, transform.position, ghostVFXLerpSpeed);
+        ghostVFX.transform.position = Vector3.Lerp(ghostVFX.transform.position, transform.position, settings.ghostVFXLerpSpeed);
         sphereCollider.center = transform.InverseTransformPoint(ghostVFX.transform.position) * .3f;
     }
 
@@ -199,11 +196,11 @@ public class PlayerController : MonoBehaviour
         if (moveVector.magnitude <= 0.01f)
             return;
 
-        Vector3 targetPos = body.position + moveVector.normalized * (moveSpeed * (InScareMode ? scareMoveSpeedModifier : 1f)) * Time.fixedDeltaTime;
+        Vector3 targetPos = body.position + moveVector.normalized * (settings.moveSpeed * (InScareMode ? settings.scareMoveSpeedModifier : 1f)) * Time.fixedDeltaTime;
         Vector3 newPosition = new Vector3(targetPos.x,
                                           Mathf.Clamp(targetPos.y,
-                                                      terrainHeightUnderPlayer + minDistanceAboveGround,
-                                                      terrainHeightUnderPlayer + maxDistanceAboveGround),
+                                                      terrainHeightUnderPlayer + settings.minDistanceAboveGround,
+                                                      terrainHeightUnderPlayer + settings.maxDistanceAboveGround),
                                           targetPos.z);
         body.MovePosition(newPosition);
     }
