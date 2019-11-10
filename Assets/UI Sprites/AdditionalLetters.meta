@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/UI Sprites/AdditionalLetters.meta
 guid: e02278575ad72bb448a231e159df1a3d
+=======
+guid: cb73132162caa1b4aabc2f3d9bd9e702
+>>>>>>> origin/Daniel:Assets/Terrain.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
