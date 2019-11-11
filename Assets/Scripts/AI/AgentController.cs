@@ -34,14 +34,14 @@ namespace ReverseSlender.AI {
         [SerializeField, Range(-1, 1)]
         private float hurry = 0;
         private void AddHurry(float add) {
-            if (!isInvincible) {
+            if (!isInvincible || add < 0) {
                 hurry = Mathf.Clamp(hurry + add, -1, 1);
             }
         }
         [SerializeField, Range(-1, 1)]
         private float fear = 0;
         private void AddFear(float add) {
-            if (!isInvincible) {
+            if (!isInvincible || add < 0) {
                 fear = Mathf.Clamp(fear + add, -1, 1);
             }
         }
@@ -129,6 +129,7 @@ namespace ReverseSlender.AI {
                         break;
                     case GoalType.Hideout:
                         AddFear(-settings.hideoutRest);
+                        Debug.Log(fear);
                         ForgetHideout(goal.GetComponent<Hideout>());
                         break;
                 }
