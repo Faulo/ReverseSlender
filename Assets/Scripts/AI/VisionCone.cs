@@ -12,6 +12,7 @@ namespace ReverseSlender.AI {
 
         public AgentSettings settings { get; set; }
 
+
         const int NUMBER_OF_RESULTS = 4;
         const float SECONDS_TO_DRAW = 0.1f;
         const int VISIBLE_LAYERS = ~0;

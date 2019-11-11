@@ -29,15 +29,21 @@ namespace ReverseSlender.AI {
         internal ISet<Hideout> hideoutMemory = new HashSet<Hideout>();
 
         [Header("In-game parameters")]
+        [SerializeField]
+        public bool isInvincible;
         [SerializeField, Range(-1, 1)]
         private float hurry = 0;
         private void AddHurry(float add) {
-            hurry = Mathf.Clamp(hurry + add, -1, 1);
+            if (!isInvincible) {
+                hurry = Mathf.Clamp(hurry + add, -1, 1);
+            }
         }
         [SerializeField, Range(-1, 1)]
         private float fear = 0;
         private void AddFear(float add) {
-            fear = Mathf.Clamp(fear + add, -1, 1);
+            if (!isInvincible) {
+                fear = Mathf.Clamp(fear + add, -1, 1);
+            }
         }
 
         
@@ -92,7 +98,7 @@ namespace ReverseSlender.AI {
 
             
 
-            if (Mathf.Approximately(fear, 1)) {
+            if (Mathf.Approximately(fear, 1) && !isInvincible) {
                 Die();
             }
 
@@ -180,6 +186,7 @@ namespace ReverseSlender.AI {
                 StopMoving();
                 animator.SetTrigger("isDying");
                 heart.alive = false;
+                vision.gameObject.SetActive(false);
             }
         }
         public void StartMovingTo(Vector3 position) {

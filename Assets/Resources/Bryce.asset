@@ -66,11 +66,11 @@ MonoBehaviour:
   visionRayDistance: 100
   horizontalFieldOfView: 1
   verticalFieldOfView: 1
-  stunMultiplier: 1000
-  ghostMultiplier: 10
-  monsterMultiplier: 500
+  stunMultiplier: 800
+  ghostMultiplier: 100
+  monsterMultiplier: 300
   collectibleRest: 0.1
-  fleeRest: 0
+  fleeRest: 1
   hideoutRest: 2
   bpmOverFear:
     serializedVersion: 2
