@@ -1,6 +1,8 @@
 # Reverse Slender
+A game about scaring a trespasser to death.
 
-### Winter Game Jam 2019
+## Jam Details
+Winter Game Jam 2019
 - Date: 08.11.2019 - 10.11.2019
 - Site: Universität Bayreuth
 - Theme: "Fundstücke" [Found pieces]
