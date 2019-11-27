@@ -32,22 +32,18 @@ namespace ReverseSlender.AI {
                     var hit = results
                         .Where(h => h.collider)
                         .OrderBy(h => h.distance)
-                        .FirstOrDefault();
-
-                    var collectible = hit.collider.GetComponentInParent<Collectible>();
-                    if (collectible) {
+                        .First();
+                    if (hit.rigidbody && hit.rigidbody.TryGetComponent(out Collectible collectible)) {
                         onNoticeCollectible?.Invoke(collectible);
                         DrawVision(hit.point, Color.green);
                         return;
                     }
-                    var hideout = hit.collider.GetComponent<Hideout>();
-                    if (hideout) {
+                    if (hit.collider.TryGetComponent(out Hideout hideout)) {
                         onNoticeHideout?.Invoke(hideout);
                         DrawVision(hit.point, Color.yellow);
                         return;
                     }
-                    var player = hit.collider.GetComponent<PlayerController>();
-                    if (player) {
+                    if (hit.collider.TryGetComponent(out PlayerController player)) {
                         onNoticePlayer?.Invoke(player, Time.deltaTime * (1f / settings.numberOfVisionRays));
                         DrawVision(hit.point, Color.magenta);
                         return;
