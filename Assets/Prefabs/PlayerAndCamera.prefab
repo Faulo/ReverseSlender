@@ -187,11 +187,11 @@ VisualEffect:
       m_Array:
       - m_Value:
           serializedVersion: 2
-          key0: {r: 117.30276, g: 236.02013, b: 91.24379, a: 0}
-          key1: {r: 45.64619, g: 110.107285, b: 70.53696, a: 1}
-          key2: {r: 15.563962, g: 51.366863, b: 34.314945, a: 0.9577465}
-          key3: {r: 15.563962, g: 51.366863, b: 50.77706, a: 0}
-          key4: {r: 16.112648, g: 15.452413, b: 49.40071, a: 0}
+          key0: {r: 0.45856342, g: 0.9219538, b: 0.35719678, a: 0}
+          key1: {r: 0.18014927, g: 0.43010637, b: 0.2769795, a: 1}
+          key2: {r: 0.06093093, g: 0.20065185, b: 0.13446827, a: 0.9577465}
+          key3: {r: 0.06093093, g: 0.20065185, b: 0.19855079, a: 0}
+          key4: {r: 0.06365032, g: 0.060619347, b: 0.19297159, a: 0}
           key5: {r: 3.5376284, g: 3.470986, b: 5.886792, a: 0}
           key6: {r: 0, g: 0, b: 0, a: 0}
           key7: {r: 0, g: 0, b: 0, a: 0}
@@ -215,6 +215,37 @@ VisualEffect:
           m_NumColorKeys: 5
           m_NumAlphaKeys: 4
         m_Name: Initial Color Cylce
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 7.9999743, g: 7.9999743, b: 7.9999743, a: 0}
+          key1: {r: 0.1158476, g: 0.6612967, b: 0.9219538, a: 1}
+          key2: {r: 0.18342537, g: 0.37167773, b: 0.9219538, a: 0.9577465}
+          key3: {r: 0.08469232, g: 0.07119065, b: 0.23443817, a: 0}
+          key4: {r: 0.20065185, g: 0.0094548, b: 0.13656934, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 8481
+          ctime2: 29491
+          ctime3: 50115
+          ctime4: 65535
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 5975
+          atime2: 50886
+          atime3: 65535
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_NumColorKeys: 5
+          m_NumAlphaKeys: 4
+        m_Name: Color over Lifetime
         m_Overridden: 1
     m_NamedObject:
       m_Array: []
