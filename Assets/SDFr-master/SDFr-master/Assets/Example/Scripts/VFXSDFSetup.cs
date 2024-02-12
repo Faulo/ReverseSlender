@@ -5,6 +5,7 @@ using SDFr;
 using UnityEngine;
 using UnityEngine.Experimental.VFX;
 using UnityEngine.Rendering;
+using UnityEngine.VFX;
 
 [ExecuteInEditMode]
 public class VFXSDFSetup : MonoBehaviour

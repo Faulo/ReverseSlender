@@ -1,18 +1,26 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "net.slothsoft.unity-extensions"
+      ]
+    }
+  ],
   "dependencies": {
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.cinemachine": "2.3.4",
-    "com.unity.ext.nunit": "1.0.0",
-    "com.unity.package-manager-ui": "2.2.0",
-    "com.unity.probuilder": "4.0.5",
-    "com.unity.render-pipelines.high-definition": "6.9.2-preview",
-    "com.unity.shadergraph": "6.9.2",
-    "com.unity.terrain-tools": "2.0.2-preview",
-    "com.unity.textmeshpro": "2.0.1",
-    "com.unity.timeline": "1.1.0",
+    "com.unity.cinemachine": "2.8.9",
+    "com.unity.ide.visualstudio": "2.0.22",
+    "com.unity.probuilder": "5.2.2",
+    "com.unity.render-pipelines.high-definition": "12.1.14",
+    "com.unity.shadergraph": "12.1.14",
+    "com.unity.terrain-tools": "4.0.5",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.timeline": "1.6.5",
     "com.unity.ugui": "1.0.0",
-    "com.unity.visualeffectgraph": "6.9.2-preview",
-    "net.slothsoft.unity-extensions": "https://github.com/Faulo/UnityExtensions.git",
+    "com.unity.visualeffectgraph": "12.1.14",
+    "net.slothsoft.unity-extensions": "3.1.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -44,11 +52,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "net.slothsoft.unity-extensions": {
-      "hash": "ffad5f57b2bf10b85f1c5302ae900f986b3d4a47",
-      "revision": "HEAD"
-    }
   }
 }
