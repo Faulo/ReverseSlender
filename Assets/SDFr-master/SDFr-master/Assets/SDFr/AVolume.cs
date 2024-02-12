@@ -8,16 +8,16 @@ namespace SDFr
     /// </summary>
     public abstract class AVolume<T> : IDisposable where T : AVolume<T>, new()
     {
-        public static T CreateVolume( Transform transform, AVolumeSettings settings )
+        public static T CreateVolume(Transform transform, AVolumeSettings settings)
         {
-            T v = new T();
+            T v = new();
             v.Initialize(transform, settings);
             return v;
         }
-        
+
         public AVolumeSettings Settings => _settings;
-        
-        public Bounds BoundsWorldAABB 
+
+        public Bounds BoundsWorldAABB
         {
             get
             {
@@ -26,34 +26,23 @@ namespace SDFr
                 return b;
             }
         }
-        
+
         protected AVolumeSettings _settings;
         protected Transform _transform;
 
-        public Matrix4x4 LocalToWorldNoScale
-        {
-            get
-            {
-                if ( _transform == null ) return Matrix4x4.identity;
-                return Matrix4x4.TRS(
+        public Matrix4x4 LocalToWorldNoScale => _transform == null
+                    ? Matrix4x4.identity
+                    : Matrix4x4.TRS(
                     _transform.position + _settings.BoundsLocal.center,
                     _transform.rotation,
                     Vector3.one);
-            }
-        }
-        
-        public Matrix4x4 LocalToWorld
-        {
-            get
-            {
-                if ( _transform == null ) return Matrix4x4.identity;
-                
-                return Matrix4x4.TRS(
+
+        public Matrix4x4 LocalToWorld => _transform == null
+                    ? Matrix4x4.identity
+                    : Matrix4x4.TRS(
                     _transform.position + _settings.BoundsLocal.center,
                     _transform.rotation,
                     _transform.localScale);
-            }
-        }
 
         protected virtual void Initialize(Transform transform, AVolumeSettings settings)
         {
@@ -61,7 +50,7 @@ namespace SDFr
             _settings = settings;
 
             //always add a bounds border when initializing AVolume
-            AVolumeSettings.AddBoundsBorder( ref settings );
+            AVolumeSettings.AddBoundsBorder(ref settings);
         }
 
         protected virtual void Dispose(bool disposing)

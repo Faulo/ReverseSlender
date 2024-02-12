@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
@@ -10,8 +8,8 @@ public class MainMenuManager : MonoBehaviour
     public AudioClip audioClipStart;
     public AudioClip audioClipClick;
     public AudioClip audioClipHover;
-    
-    public void PressStart ()
+
+    public void PressStart()
     {
         SceneManager.LoadScene("Terrain_mitNavMeshAgent");
     }
@@ -22,7 +20,7 @@ public class MainMenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void PlaySoundStart ()
+    public void PlaySoundStart()
     {
         audioSource.PlayOneShot(audioClipStart);
     }

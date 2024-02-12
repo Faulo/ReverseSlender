@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Player Settings", menuName = "Gameplay/Player Settings", order = 1)]
-public class PlayerSettings : ScriptableObject {
+public class PlayerSettings : ScriptableObject
+{
     [Header("Movement")]
     [Range(0, 20), Tooltip("Movement speed while ghost.")]
     public float moveSpeed = 7;

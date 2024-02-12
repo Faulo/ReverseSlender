@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace ReverseSlender.AI {
+namespace ReverseSlender.AI
+{
     [CreateAssetMenu(fileName = "New Agent Settings", menuName = "Gameplay/Agent Settings", order = 1)]
-    public class AgentSettings : ScriptableObject {
+    public class AgentSettings : ScriptableObject
+    {
         [Header("Movement")]
         [Range(0, 20)]
         public float baseSpeed;

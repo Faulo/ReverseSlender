@@ -42,7 +42,6 @@ public class Sound
     [SerializeField] private GameObject parentObject;
     public GameObject ParentObject => parentObject;
 
-
     [HideInInspector]
     public AudioSource source;
 }

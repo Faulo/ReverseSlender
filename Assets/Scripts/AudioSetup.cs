@@ -9,6 +9,6 @@ public class AudioSetup : MonoBehaviour
 
     public void OnSliderValueChanged(float value)
     {
-        audioMixer.SetFloat(paramaterName, value);
+        _ = audioMixer.SetFloat(paramaterName, value);
     }
 }

@@ -1,14 +1,13 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Linq;
+using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private Sound[] sounds;
     public int SoundCount => sounds.Length;
 
-    private static AudioManager instance;
-    public static AudioManager Instance => instance;
+    public static AudioManager Instance { get; private set; }
 
     private AudioSource oneShotSource;
 
@@ -29,7 +28,7 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
         nextTimeUntilRandomSound = UnityEngine.Random.Range(minTimeBetweenSounds, maxTimeBetweenSounds);
         oneShotSource = gameObject.AddComponent<AudioSource>();
 
@@ -37,7 +36,7 @@ public class AudioManager : MonoBehaviour
         {
             if (s.Is3DSound == false)
             {
-                GameObject sourceGameobject = new GameObject("AudioSource Sound : " + s.Name);
+                GameObject sourceGameobject = new("AudioSource Sound : " + s.Name);
                 sourceGameobject.transform.parent = transform;
                 AudioSource newSource = sourceGameobject.AddComponent<AudioSource>();
                 s.source = newSource;
@@ -49,8 +48,11 @@ public class AudioManager : MonoBehaviour
                 s.source.playOnAwake = s.PlayOnAwake;
                 s.source.ignoreListenerPause = s.IgnoreGamePaused;
             }
+
             if (s.PlayOnAwake)
+            {
                 s.source.Play();
+            }
         }
     }
 
@@ -72,14 +74,19 @@ public class AudioManager : MonoBehaviour
             if (s.Is3DSound)
             {
                 if (s.ParentObject == null)
+                {
                     throw new Exception("3D sound " + s.Name + " needs a parent object!");
+                }
+
                 for (int i = s.ParentObject.transform.childCount - 1; i >= 0; i--)
                 {
                     if (s.ParentObject.transform.GetChild(i).GetComponent<AudioSource>() != null)
+                    {
                         DestroyImmediate(s.ParentObject.transform.GetChild(i).gameObject);
+                    }
                 }
 
-                GameObject sourceGameobject = new GameObject("AudioSource Sound : " + s.Name);
+                GameObject sourceGameobject = new("AudioSource Sound : " + s.Name);
                 sourceGameobject.transform.parent = s.ParentObject.transform;
                 sourceGameobject.transform.localPosition = Vector3.zero;
                 AudioSource newSource = sourceGameobject.AddComponent<AudioSource>();
@@ -96,7 +103,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public Sound GetSound(int i) => sounds[i];
+    public Sound GetSound(int i)
+    {
+        return sounds[i];
+    }
 
     public void PlaySoundOneShot(AudioClip clip, float volume = 1f)
     {
@@ -171,14 +181,15 @@ public class AudioManager : MonoBehaviour
     {
         int numSounds = soundNames.Length;
         if (numSounds < 2)
+        {
             throw new ArgumentException("PlayRandomSound needs at least to soundeffect names!");
+        }
+
         Sound[] soundsToChoseFrom = new Sound[numSounds];
         for (int i = 0; i < numSounds; i++)
         {
-            var sound = Array.Find(sounds, x => x.Name == soundNames[i]);
-            if (sound == null)
-                throw new ArgumentException("PlayRandomSound sound could not be found: " + soundNames[i]);
-            soundsToChoseFrom[i] = sound;
+            Sound sound = Array.Find(sounds, x => x.Name == soundNames[i]);
+            soundsToChoseFrom[i] = sound ?? throw new ArgumentException("PlayRandomSound sound could not be found: " + soundNames[i]);
         }
 
         Sound soundToPlay = soundsToChoseFrom.RandomElement();
@@ -261,6 +272,7 @@ public class AudioManager : MonoBehaviour
         {
             names[i] = sounds[i].Name;
         }
+
         return names;
     }
 
@@ -269,9 +281,13 @@ public class AudioManager : MonoBehaviour
     public void AddNewSound()
     {
         if (sounds == null)
+        {
             sounds = new Sound[1];
+        }
         else
+        {
             Array.Resize(ref sounds, SoundCount + 1);
+        }
     }
 
     public void RemoveSound(int index)
@@ -282,12 +298,14 @@ public class AudioManager : MonoBehaviour
             for (int i = sound.ParentObject.transform.childCount - 1; i >= 0; i--)
             {
                 if (sound.ParentObject.transform.GetChild(i).GetComponent<AudioSource>() != null)
+                {
                     DestroyImmediate(sound.ParentObject.transform.GetChild(i).gameObject);
+                }
             }
         }
 
         sounds[index] = null;
-        var remainingSounds = sounds.Where(s => s != null);
+        System.Collections.Generic.IEnumerable<Sound> remainingSounds = sounds.Where(s => s != null);
         sounds = remainingSounds.ToArray();
     }
 
@@ -299,13 +317,18 @@ public class AudioManager : MonoBehaviour
         Sound s = sounds[index];
         if (testingSoundGameobject == null)
         {
-            testingSoundGameobject = new GameObject();
-            testingSoundGameobject.hideFlags = HideFlags.HideAndDontSave;
-            testingSoundGameobject.AddComponent(typeof(AudioSource));
+            testingSoundGameobject = new GameObject
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            _ = testingSoundGameobject.AddComponent(typeof(AudioSource));
             testingSoundSource = testingSoundGameobject.GetComponent<AudioSource>();
         }
+
         if (testingSoundSource.isPlaying)
+        {
             testingSoundSource.Stop();
+        }
 
         testingSoundSource.volume = s.Volume;
         testingSoundSource.pitch = s.RandomizePitch ? s.Pitch + UnityEngine.Random.Range(-s.PitchRange, s.PitchRange) : s.Pitch;
@@ -318,7 +341,9 @@ public class AudioManager : MonoBehaviour
     public void StopTestingSound()
     {
         if (testingSoundSource?.isPlaying == true)
+        {
             testingSoundSource.Stop();
+        }
     }
 
 #endif

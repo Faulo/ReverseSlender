@@ -6,8 +6,8 @@ public class BryceHeartBeat : MonoBehaviour
     [Range(60, 160)] public int bpm = 60;
     public int Bpm
     {
-        get { return bpm; }
-        set { bpm = Mathf.Clamp(value, 60, 160); }
+        get => bpm;
+        set => bpm = Mathf.Clamp(value, 60, 160);
     }
 
     [SerializeField] private AnimationCurve heartBeatAnimCurve;
@@ -18,7 +18,7 @@ public class BryceHeartBeat : MonoBehaviour
     private float heartVisibility;
     public float HeartVisibility
     {
-        get { return heartVisibility; }
+        get => heartVisibility;
         set
         {
             heartVisibility = Mathf.Clamp01(value);
@@ -34,7 +34,7 @@ public class BryceHeartBeat : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(HeartBeatRoutine());
+        _ = StartCoroutine(HeartBeatRoutine());
     }
 
     private void Update()
@@ -52,8 +52,9 @@ public class BryceHeartBeat : MonoBehaviour
             AudioManager.Instance.PlaySound(HEARTBEATNAME);
             yield return StartCoroutine(transform.ScaleRoutine(targetScale, AnimationLength, heartBeatAnimCurve));
         }
+
         transform.localScale = Vector3.one;
-        StartCoroutine(transform.ScaleRoutine(targetScale * 2.5f, 1f, heartBeatAnimCurve));
+        _ = StartCoroutine(transform.ScaleRoutine(targetScale * 2.5f, 1f, heartBeatAnimCurve));
         AudioManager.Instance.PlaySoundOverridePitch(HEARTBEATNAME, .85f);
         AudioManager.Instance.PlaySound("DeathChoir");
     }

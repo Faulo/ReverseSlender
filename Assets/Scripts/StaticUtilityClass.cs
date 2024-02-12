@@ -1,15 +1,15 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 #region Unity
 public static class Utility
 {
-    public static WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
+    public static WaitForFixedUpdate waitForFixedUpdate = new();
 
     #region Transforms
 
@@ -17,18 +17,20 @@ public static class Utility
 
     public static void Move(this Transform transform, Vector3 trgPos, float duration, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(MoveGameObjectRoutine(transform, trgPos, duration, animationCurve));
+        _ = monoBehaviour.StartCoroutine(MoveGameObjectRoutine(transform, trgPos, duration, animationCurve));
     }
     private static IEnumerator MoveGameObjectRoutine(Transform transform, Vector3 trgPos, float duration, AnimationCurve animationCurve)
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Vector3 startPos = transform.position;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / (steps);
+            float progress = (float)i / steps;
             transform.position = Vector3.Lerp(startPos, trgPos, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -38,12 +40,14 @@ public static class Utility
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Vector3 startPos = transform.position;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / (steps);
+            float progress = (float)i / steps;
             transform.position = Vector3.Lerp(startPos, trgPos, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -55,18 +59,20 @@ public static class Utility
 
     public static void Rotate(this Transform transform, Quaternion trgRotation, float duration, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(RotateGameObjectRoutine(transform, trgRotation, duration, animationCurve));
+        _ = monoBehaviour.StartCoroutine(RotateGameObjectRoutine(transform, trgRotation, duration, animationCurve));
     }
     private static IEnumerator RotateGameObjectRoutine(Transform transform, Quaternion trgRotation, float duration, AnimationCurve animationCurve)
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Quaternion startRotation = transform.rotation;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             transform.rotation = Quaternion.Lerp(startRotation, trgRotation, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -76,12 +82,14 @@ public static class Utility
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Quaternion startRotation = transform.rotation;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             transform.rotation = Quaternion.Lerp(startRotation, trgRotation, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -93,18 +101,20 @@ public static class Utility
 
     public static void Scale(this Transform transform, Vector3 targetScale, float duration, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(ScaleGameObjectRoutine(transform, targetScale, duration, animationCurve));
+        _ = monoBehaviour.StartCoroutine(ScaleGameObjectRoutine(transform, targetScale, duration, animationCurve));
     }
     private static IEnumerator ScaleGameObjectRoutine(Transform transform, Vector3 targetScale, float duration, AnimationCurve animationCurve)
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Vector3 startScale = transform.localScale;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             transform.localScale = Vector3.Lerp(startScale, targetScale, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -114,12 +124,14 @@ public static class Utility
     {
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         Vector3 startScale = transform.localScale;
         for (int i = 1; i <= steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             transform.localScale = Vector3.Lerp(startScale, targetScale, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -133,7 +145,7 @@ public static class Utility
 
     public static void SimpleAnimate(this SpriteRenderer spriteRend, float intervall, MonoBehaviour monoBehaviour, params Sprite[] sprites)
     {
-        monoBehaviour.StartCoroutine(SimpleAnimateCR(spriteRend, intervall, sprites));
+        _ = monoBehaviour.StartCoroutine(SimpleAnimateCR(spriteRend, intervall, sprites));
     }
     private static IEnumerator SimpleAnimateCR(SpriteRenderer spriteRend, float intervall, params Sprite[] sprites)
     {
@@ -143,7 +155,10 @@ public static class Utility
             spriteRend.sprite = sprites[index];
             ++index;
             if (index > sprites.Length - 1)
+            {
                 index = 0;
+            }
+
             yield return new WaitForSeconds(intervall);
         }
     }
@@ -156,23 +171,26 @@ public static class Utility
             spriteRend.sprite = sprites[index];
             ++index;
             if (index > sprites.Length - 1)
+            {
                 index = 0;
+            }
+
             yield return new WaitForSeconds(intervall);
         }
     }
 
     public static void LerpColor(this Image image, Color targetColor, float duration, bool ignoreTimeScale, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(_LerpColorRoutine(image, targetColor, duration, ignoreTimeScale, animationCurve));
+        _ = monoBehaviour.StartCoroutine(_LerpColorRoutine(image, targetColor, duration, ignoreTimeScale, animationCurve));
     }
     private static IEnumerator _LerpColorRoutine(Image image, Color targetColor, float duration, bool ignoreTimeScale, AnimationCurve animationCurve)
     {
         image.gameObject.SetActive(true);
         image.enabled = true;
         Color startingColor = image.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -198,9 +216,9 @@ public static class Utility
         image.gameObject.SetActive(true);
         image.enabled = true;
         Color startingColor = image.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -221,19 +239,18 @@ public static class Utility
         }
     }
 
-
     public static void LerpColor(this SpriteRenderer image, Color targetColor, float duration, bool ignoreTimeScale, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(_LerpColorRoutine(image, targetColor, duration, ignoreTimeScale, animationCurve));
+        _ = monoBehaviour.StartCoroutine(_LerpColorRoutine(image, targetColor, duration, ignoreTimeScale, animationCurve));
     }
     private static IEnumerator _LerpColorRoutine(SpriteRenderer image, Color targetColor, float duration, bool ignoreTimeScale, AnimationCurve animationCurve)
     {
         image.gameObject.SetActive(true);
         image.enabled = true;
         Color startingColor = image.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -259,9 +276,9 @@ public static class Utility
         image.gameObject.SetActive(true);
         image.enabled = true;
         Color startingColor = image.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -282,17 +299,16 @@ public static class Utility
         }
     }
 
-
     public static void LerpColor(this TMPro.TextMeshProUGUI text, Color targetColor, float duration, bool ignoreTimeScale, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(_LerpColorRoutine(text, targetColor, duration, ignoreTimeScale, animationCurve));
+        _ = monoBehaviour.StartCoroutine(_LerpColorRoutine(text, targetColor, duration, ignoreTimeScale, animationCurve));
     }
     private static IEnumerator _LerpColorRoutine(TMPro.TextMeshProUGUI text, Color targetColor, float duration, bool ignoreTimeScale, AnimationCurve animationCurve)
     {
         Color startingColor = text.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -318,9 +334,9 @@ public static class Utility
         text.gameObject.SetActive(true);
         text.enabled = true;
         Color startingColor = text.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -341,17 +357,16 @@ public static class Utility
         }
     }
 
-
     public static void LerpColor(this TMPro.TextMeshPro text, Color targetColor, float duration, bool ignoreTimeScale, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(_LerpColorRoutine(text, targetColor, duration, ignoreTimeScale, animationCurve));
+        _ = monoBehaviour.StartCoroutine(_LerpColorRoutine(text, targetColor, duration, ignoreTimeScale, animationCurve));
     }
     private static IEnumerator _LerpColorRoutine(TMPro.TextMeshPro text, Color targetColor, float duration, bool ignoreTimeScale, AnimationCurve animationCurve)
     {
         Color startingColor = text.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -377,9 +392,9 @@ public static class Utility
         text.gameObject.SetActive(true);
         text.enabled = true;
         Color startingColor = text.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -400,18 +415,17 @@ public static class Utility
         }
     }
 
-
     public static void LerpColor(this MeshRenderer meshRenderer, Color targetColor, float duration, bool ignoreTimeScale, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(_LerpColorRoutine(meshRenderer, targetColor, duration, ignoreTimeScale, animationCurve));
+        _ = monoBehaviour.StartCoroutine(_LerpColorRoutine(meshRenderer, targetColor, duration, ignoreTimeScale, animationCurve));
     }
     private static IEnumerator _LerpColorRoutine(MeshRenderer meshRenderer, Color targetColor, float duration, bool ignoreTimeScale, AnimationCurve animationCurve)
     {
         Material mat = meshRenderer.material;
         Color startingColor = mat.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -436,9 +450,9 @@ public static class Utility
     {
         Material mat = meshRenderer.material;
         Color startingColor = mat.color;
-        float progress = 0f;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
 
+        float progress;
         if (ignoreTimeScale)
         {
             for (int i = 1; i <= steps; i++)
@@ -465,18 +479,20 @@ public static class Utility
 
     public static void LerpVolume(this AudioSource source, float targetVolume, float duration, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(LerpAudioVolumeCR(source, targetVolume, duration, animationCurve));
+        _ = monoBehaviour.StartCoroutine(LerpAudioVolumeCR(source, targetVolume, duration, animationCurve));
     }
     private static IEnumerator LerpAudioVolumeCR(AudioSource source, float targetVolume, float duration, AnimationCurve animationCurve)
     {
         float startingValue = source.volume;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         for (int i = 0; i < steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             source.volume = Mathf.Lerp(startingValue, targetVolume, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -487,31 +503,34 @@ public static class Utility
         float startingValue = source.volume;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         for (int i = 0; i < steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             source.volume = Mathf.Lerp(startingValue, targetVolume, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
     }
 
-
     public static void LerpPitch(this AudioSource source, float targetVolume, float duration, MonoBehaviour monoBehaviour, AnimationCurve animationCurve = null)
     {
-        monoBehaviour.StartCoroutine(LerpPitchCR(source, targetVolume, duration, animationCurve));
+        _ = monoBehaviour.StartCoroutine(LerpPitchCR(source, targetVolume, duration, animationCurve));
     }
     private static IEnumerator LerpPitchCR(AudioSource source, float targetPitch, float duration, AnimationCurve animationCurve)
     {
         float startingValue = source.pitch;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         for (int i = 0; i < steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             source.pitch = Mathf.Lerp(startingValue, targetPitch, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -522,11 +541,13 @@ public static class Utility
         float startingValue = source.volume;
         int steps = Mathf.RoundToInt(duration / Time.fixedDeltaTime);
         if (steps < 2)
+        {
             steps = 2;
-        float progress = 0f;
+        }
+
         for (int i = 0; i < steps; i++)
         {
-            progress = (float)i / steps;
+            float progress = (float)i / steps;
             source.pitch = Mathf.Lerp(startingValue, targetPitch, animationCurve == null ? progress : animationCurve.Evaluate(progress));
             yield return waitForFixedUpdate;
         }
@@ -547,11 +568,11 @@ public static class Utility
 
     public static void TransitionToScene(string sceneName, MonoBehaviour monoBehaviour, float delay = 0f)
     {
-        monoBehaviour.StartCoroutine(SceneTransition(sceneName, delay));
+        _ = monoBehaviour.StartCoroutine(SceneTransition(sceneName, delay));
     }
     public static void TransitionToScene(int sceneIndex, MonoBehaviour monoBehaviour, float delay = 0f)
     {
-        monoBehaviour.StartCoroutine(SceneTransition(sceneIndex, delay));
+        _ = monoBehaviour.StartCoroutine(SceneTransition(sceneIndex, delay));
     }
     private static IEnumerator SceneTransition(string sceneName, float delayBeforeTrans)
     {
@@ -569,23 +590,17 @@ public static class Utility
 
     public static bool RoughlyEqual(this Vector3 pos1, Vector3 pos2, float tolerance = 0.01f)
     {
-        if (Vector3.Distance(pos1, pos2) <= tolerance)
-            return true;
-        else
-            return false;
+        return Vector3.Distance(pos1, pos2) <= tolerance;
     }
 
     public static bool RoughlyEqual(this Vector2 pos1, Vector2 pos2, float tolerance = 0.01f)
     {
-        if (Vector2.Distance(pos1, pos2) <= tolerance)
-            return true;
-        else
-            return false;
+        return Vector2.Distance(pos1, pos2) <= tolerance;
     }
 
     public static float Remap(float value, float from1, float to1, float from2, float to2)
     {
-        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+        return ((value - from1) / (to1 - from1) * (to2 - from2)) + from2;
     }
 
     #endregion
@@ -596,14 +611,21 @@ public static class Utility
 public static class CollectionExtentions
 {
     // The method to retrieve all matching objects in a sorted or unsorted List<T>
-    public static IEnumerable<T> GetAll<T>(this List<T> myList, T searchValue) => myList.Where(t => t.Equals(searchValue));
+    public static IEnumerable<T> GetAll<T>(this List<T> myList, T searchValue)
+    {
+        return myList.Where(t => t.Equals(searchValue));
+    }
+
     // Count the number of times an item appears in this unsorted or sorted List<T>
-    public static int CountAll<T>(this List<T> myList, T searchValue) => myList.GetAll(searchValue).Count();
+    public static int CountAll<T>(this List<T> myList, T searchValue)
+    {
+        return myList.GetAll(searchValue).Count();
+    }
 
     // The method to retrieve all matching objects in a sorted List<T>
     public static T[] BinarySearchGetAll<T>(this List<T> myList, T searchValue)
     {
-        List<T> retObjs = new List<T>();
+        List<T> retObjs = new();
         int center = myList.BinarySearch(searchValue);
         if (center > 0)
         {
@@ -614,6 +636,7 @@ public static class CollectionExtentions
                 left -= 1;
                 retObjs.Add(myList[left]);
             }
+
             int right = center;
             while (right < (myList.Count - 1) &&
             myList[right + 1].Equals(searchValue))
@@ -622,29 +645,33 @@ public static class CollectionExtentions
                 retObjs.Add(myList[right]);
             }
         }
-        return (retObjs.ToArray());
+
+        return retObjs.ToArray();
     }
     // Count the number of times an item appears in this sorted List<T>
-    public static int BinarySearchCountAll<T>(this List<T> myList, T searchValue) => BinarySearchGetAll(myList, searchValue).Count();
+    public static int BinarySearchCountAll<T>(this List<T> myList, T searchValue)
+    {
+        return BinarySearchGetAll(myList, searchValue).Count();
+    }
 
     // Get last element in collection.
     public static T LastElement<T>(this ICollection<T> array)
     {
         if (array == null)
+        {
             throw new NullReferenceException("GetLastElement: array is null!");
-        int length = array.Count;
-        if (length == 0)
-            throw new Exception("GetLastElement: array has no elements!");
-        return array.ElementAt(length - 1);
-    }
+        }
 
+        int length = array.Count;
+        return length == 0 ? throw new Exception("GetLastElement: array has no elements!") : array.ElementAt(length - 1);
+    }
 }
 #endregion
 
 #region Random
-static class RandomExtensions
+internal static class RandomExtensions
 {
-    private static System.Random rng = new System.Random();
+    private static readonly System.Random rng = new();
 
     public static void Shuffle<T>(this IList<T> list)
     {
@@ -653,9 +680,7 @@ static class RandomExtensions
         {
             n--;
             int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            (list[n], list[k]) = (list[k], list[n]);
         }
     }
 
@@ -667,10 +692,9 @@ static class RandomExtensions
         {
             n--;
             int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            (list[n], list[k]) = (list[k], list[n]);
         }
+
         container.FromList(list);
     }
 
@@ -685,31 +709,44 @@ static class RandomExtensions
 public class Container<T> : IEnumerable<T>
 {
     public Container() { }
-    private List<T> _internalList = new List<T>();
+    private readonly List<T> _internalList = new();
     // This iterator iterates over each element from first to last
-    public IEnumerator<T> GetEnumerator() => _internalList.GetEnumerator();
+    public IEnumerator<T> GetEnumerator()
+    {
+        return _internalList.GetEnumerator();
+    }
+
     // This iterator iterates over each element from last to first
     public IEnumerable<T> GetReverseOrderEnumerator()
     {
         foreach (T item in ((IEnumerable<T>)_internalList).Reverse())
+        {
             yield return item;
+        }
     }
     // This iterator iterates over each element from first to last, stepping
     // over a predefined number of elements
     public IEnumerable<T> GetForwardStepEnumerator(int step)
     {
         foreach (T item in _internalList.EveryNthItem(step))
+        {
             yield return item;
+        }
     }
     // This iterator iterates over each element from last to first, stepping
     // over a predefined number of elements
     public IEnumerable<T> GetReverseStepEnumerator(int step)
     {
         foreach (T item in ((IEnumerable<T>)_internalList).Reverse().EveryNthItem(step))
+        {
             yield return item;
+        }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 
     public void Clear()
     {
@@ -735,14 +772,19 @@ public static class ContainerExtension
         {
             ++current;
             if (current % step == 0)
+            {
                 yield return item;
+            }
         }
     }
 
     public static void FromList<T>(this Container<T> container, List<T> list)
     {
         container.Clear();
-        foreach (T item in list) container.Add(item);
+        foreach (T item in list)
+        {
+            container.Add(item);
+        }
     }
 }
 #endregion

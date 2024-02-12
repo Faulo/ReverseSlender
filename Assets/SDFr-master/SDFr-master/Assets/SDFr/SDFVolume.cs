@@ -14,7 +14,6 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-
 #if USE_BURST_AND_MATH
 using Unity.Mathematics;
 using Unity.Burst;
@@ -24,117 +23,119 @@ using vec3		= Unity.Mathematics.float3;
 using vec4		= Unity.Mathematics.float4;
 #else
 // Aliases
-using Random	= UnityEngine.Random;
-using vec3		= UnityEngine.Vector3;
-using vec4		= UnityEngine.Vector4;
+using Random = UnityEngine.Random;
+using vec3 = UnityEngine.Vector3;
+using vec4 = UnityEngine.Vector4;
 #endif
 
 namespace SDFr
 {
     public class SDFVolume : AVolume<SDFVolume>
     {
-        #if USE_BURST_AND_MATH
+#if USE_BURST_AND_MATH
         private const string strProgressTitle = "SDFr [Burst]";
-        #else
+#else
         private const string strProgressTitle = "SDFr";
-        #endif
+#endif
         private const string strProgress = "Generating signed distance field...";
-        
+
         private const int LAYER_FRONT_GEO = 4; //"water" builtin
-        private int LAYER_MASK_FRONT = 1 << LAYER_FRONT_GEO;
+        private readonly int LAYER_MASK_FRONT = 1 << LAYER_FRONT_GEO;
         private const int LAYER_BACK_GEO = 5; //"UI" builtin
-        private int LAYER_MASK_BACK = 1 << LAYER_BACK_GEO;
-        
-        private Action<SDFVolume,float[],float,object> onBakeComplete;
-        
+        private readonly int LAYER_MASK_BACK = 1 << LAYER_BACK_GEO;
+
+        private Action<SDFVolume, float[], float, object> onBakeComplete;
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            if (!disposing) return;
+            if (!disposing)
+            {
+                return;
+            }
+
             onBakeComplete = null;
         }
-        
-        public void Bake( int raySamples, List<Renderer> renderers, Action<SDFVolume,float[],float,object> bakeComplete, object passthrough = null )
+
+        public void Bake(int raySamples, List<Renderer> renderers, Action<SDFVolume, float[], float, object> bakeComplete, object passthrough = null)
         {
             onBakeComplete = bakeComplete;
 
             int progressInterval = _settings.CellCount / 4;
-            int progress = 0;
-            
-            Stopwatch stopwatch = new Stopwatch();
+
+            Stopwatch stopwatch = new();
             stopwatch.Start();
 
             vec3 halfVoxel = _settings.HalfVoxel;
-            float maxDistance = 0f;
 
             //adjusted to best timings from testing but it could vary by CPU
             int calcRayLengthBatchCount = 32;
-            calcRayLengthBatchCount = Mathf.Clamp(calcRayLengthBatchCount,1,raySamples);
+            calcRayLengthBatchCount = Mathf.Clamp(calcRayLengthBatchCount, 1, raySamples);
             int raycastBatchCount = 8;
-            raycastBatchCount = Mathf.Clamp(raycastBatchCount,1,raySamples);
+            raycastBatchCount = Mathf.Clamp(raycastBatchCount, 1, raySamples);
             int prepareRaysBatchCount = 64;
-            prepareRaysBatchCount = Mathf.Clamp(prepareRaysBatchCount,1,raySamples);
+            prepareRaysBatchCount = Mathf.Clamp(prepareRaysBatchCount, 1, raySamples);
             int compareBatchCount = 128;
-            
+
             //for raycast method front facing geo and flipped backfacing geo is required
-            List<Collider> geoFront = new List<Collider>();
-            List<Collider> geoBack = new List<Collider>();
-            CreateColliders( ref renderers, ref geoFront, ref geoBack );
-            
+            List<Collider> geoFront = new();
+            List<Collider> geoBack = new();
+            CreateColliders(ref renderers, ref geoFront, ref geoBack);
+
             //prepare data
-            NativeArray<float> distances = new NativeArray<float>(_settings.CellCount, Allocator.TempJob);
-            NativeArray<CellResults> allResults = new NativeArray<CellResults>(_settings.CellCount,Allocator.TempJob);
-            
+            NativeArray<float> distances = new(_settings.CellCount, Allocator.TempJob);
+            NativeArray<CellResults> allResults = new(_settings.CellCount, Allocator.TempJob);
+
             //constant for all cells
-            NativeArray<vec3> sphereSamples = new NativeArray<vec3>(raySamples, Allocator.TempJob);
+            NativeArray<vec3> sphereSamples = new(raySamples, Allocator.TempJob);
             //NativeArray<vec3> randomDirections = new NativeArray<vec3>(raySamples, Allocator.TempJob);
-            NativeArray<vec4> volumePlanes = new NativeArray<vec4>(6, Allocator.TempJob);
-            
+            NativeArray<vec4> volumePlanes = new(6, Allocator.TempJob);
+
             GetUniformPointsOnSphereNormalized(ref sphereSamples);
             //GetRandomDirections( _halfVoxel*settings.JitterScale, settings.JitterSeed, ref randomDirections);
-            
+
             vec3 aabbMin = BoundsWorldAABB.min;
-            vec3 aabbMax = BoundsWorldAABB.max;            
+            vec3 aabbMax = BoundsWorldAABB.max;
             //the max ray length, used to normalize all resulting distances
             //so they are treated as 0 to 1 within a volume
             float aabbMagnitude = BoundsWorldAABB.size.magnitude;
-            
-            Plane pl = new Plane(Vector3.right,aabbMin);
-            Plane pr = new Plane(Vector3.left,aabbMax);
-            Plane pd = new Plane(Vector3.up,aabbMin);
-            Plane pu = new Plane(Vector3.down,aabbMax);
-            Plane pb = new Plane(Vector3.forward,aabbMin); 
-            Plane pf = new Plane(Vector3.back,aabbMax);
 
-			volumePlanes[0] = new vec4( pl.normal.x, pl.normal.y, pl.normal.z, pl.distance);
-            volumePlanes[1] = new vec4( pr.normal.x, pr.normal.y, pr.normal.z, pr.distance);
-            volumePlanes[2] = new vec4( pd.normal.x, pd.normal.y, pd.normal.z, pd.distance);
-            volumePlanes[3] = new vec4( pu.normal.x, pu.normal.y, pu.normal.z, pu.distance);
-            volumePlanes[4] = new vec4( pb.normal.x, pb.normal.y, pb.normal.z, pb.distance);
-            volumePlanes[5] = new vec4( pf.normal.x, pf.normal.y, pf.normal.z, pf.distance);
+            Plane pl = new(Vector3.right, aabbMin);
+            Plane pr = new(Vector3.left, aabbMax);
+            Plane pd = new(Vector3.up, aabbMin);
+            Plane pu = new(Vector3.down, aabbMax);
+            Plane pb = new(Vector3.forward, aabbMin);
+            Plane pf = new(Vector3.back, aabbMax);
+
+            volumePlanes[0] = new vec4(pl.normal.x, pl.normal.y, pl.normal.z, pl.distance);
+            volumePlanes[1] = new vec4(pr.normal.x, pr.normal.y, pr.normal.z, pr.distance);
+            volumePlanes[2] = new vec4(pd.normal.x, pd.normal.y, pd.normal.z, pd.distance);
+            volumePlanes[3] = new vec4(pu.normal.x, pu.normal.y, pu.normal.z, pu.distance);
+            volumePlanes[4] = new vec4(pb.normal.x, pb.normal.y, pb.normal.z, pb.distance);
+            volumePlanes[5] = new vec4(pf.normal.x, pf.normal.y, pf.normal.z, pf.distance);
 
             //iterate each cell performing raycasted samples
             for (int i = 0; i < _settings.CellCount; i++)
             {
 #if UNITY_EDITOR
-				if (i % progressInterval == 0)
+                if (i % progressInterval == 0)
                 {
-                    EditorUtility.DisplayProgressBar(strProgressTitle,strProgress,i/(float)_settings.CellCount);
+                    EditorUtility.DisplayProgressBar(strProgressTitle, strProgress, i / (float)_settings.CellCount);
                 }
 #endif
 
-				vec3 positionWS = _settings.ToPositionWS(i,LocalToWorldNoScale);
+                vec3 positionWS = _settings.ToPositionWS(i, LocalToWorldNoScale);
                 vec3 centerVoxelWS = positionWS + halfVoxel;
-                
-                NativeArray<float> rayLengths = new NativeArray<float>(raySamples, Allocator.TempJob);
-                NativeArray<RaycastCommand> allRaycastsFront = new NativeArray<RaycastCommand>(raySamples, Allocator.TempJob);
-                NativeArray<RaycastCommand> allRaycastsBack = new NativeArray<RaycastCommand>(raySamples, Allocator.TempJob);
-                NativeArray<RaycastHit> frontHits = new NativeArray<RaycastHit>(raySamples, Allocator.TempJob);
-                NativeArray<RaycastHit> backHits = new NativeArray<RaycastHit>(raySamples, Allocator.TempJob);
-                
+
+                NativeArray<float> rayLengths = new(raySamples, Allocator.TempJob);
+                NativeArray<RaycastCommand> allRaycastsFront = new(raySamples, Allocator.TempJob);
+                NativeArray<RaycastCommand> allRaycastsBack = new(raySamples, Allocator.TempJob);
+                NativeArray<RaycastHit> frontHits = new(raySamples, Allocator.TempJob);
+                NativeArray<RaycastHit> backHits = new(raySamples, Allocator.TempJob);
+
                 //calculate the ray lengths, just so rays are clipped within the volume when raycasting
-                CalculateRayLengths calcRayLengths = new CalculateRayLengths
+                CalculateRayLengths calcRayLengths = new()
                 {
                     Samples = sphereSamples,
                     VolumePlanes = volumePlanes,
@@ -142,10 +143,10 @@ namespace SDFr
                     RayLength = aabbMagnitude,
                     RayOrigin = centerVoxelWS
                 };
-                JobHandle rayLengthHandle = calcRayLengths.Schedule(raySamples,calcRayLengthBatchCount);
-                
+                JobHandle rayLengthHandle = calcRayLengths.Schedule(raySamples, calcRayLengthBatchCount);
+
                 //prepare raycasts front
-                PrepareRaycastCommands frontPrc = new PrepareRaycastCommands
+                PrepareRaycastCommands frontPrc = new()
                 {
                     Samples = sphereSamples,
                     RayLengths = rayLengths,
@@ -154,7 +155,7 @@ namespace SDFr
                     RayOrigin = centerVoxelWS,
                 };
                 //prepare raycasts back
-                PrepareRaycastCommands backPrc = new PrepareRaycastCommands
+                PrepareRaycastCommands backPrc = new()
                 {
                     Samples = sphereSamples,
                     RayLengths = rayLengths,
@@ -168,77 +169,78 @@ namespace SDFr
                     raySamples, prepareRaysBatchCount, rayLengthHandle);
                 JobHandle scheduleFrontHandle = RaycastCommand.ScheduleBatch(
                     allRaycastsFront, frontHits, raycastBatchCount, prepareFrontHandle);
-                
+
                 //schedule back raycasts
                 JobHandle prepareBackHandle = backPrc.Schedule(
                     raySamples, prepareRaysBatchCount, rayLengthHandle);
                 JobHandle scheduleBackHandle = RaycastCommand.ScheduleBatch(
                     allRaycastsBack, backHits, raycastBatchCount, prepareBackHandle);
-                
+
                 //combine handles
                 JobHandle frontBackHandle = JobHandle.CombineDependencies(scheduleFrontHandle, scheduleBackHandle);
-                
+
                 //process results and put into current cell index
-                ProcessHits processHits = new ProcessHits
+                ProcessHits processHits = new()
                 {
                     FrontHits = frontHits,
                     BackHits = backHits,
-                    Results = allResults.Slice(i,1),
+                    Results = allResults.Slice(i, 1),
                 };
 
-                JobHandle cellHandle = processHits.Schedule(frontBackHandle);   
+                JobHandle cellHandle = processHits.Schedule(frontBackHandle);
                 cellHandle.Complete();
-                
+
                 rayLengths.Dispose();
                 allRaycastsFront.Dispose();
                 allRaycastsBack.Dispose();
                 frontHits.Dispose();
                 backHits.Dispose();
-                
+
             } //for each cell
-            
+
             //final distances
-            CompareDistances compareDistances = new CompareDistances
+            CompareDistances compareDistances = new()
             {
                 Distances = distances,
                 Results = allResults
             };
-            
-            JobHandle compareDistancesHandle = compareDistances.Schedule(_settings.CellCount,compareBatchCount);
+
+            JobHandle compareDistancesHandle = compareDistances.Schedule(_settings.CellCount, compareBatchCount);
             compareDistancesHandle.Complete();
-            
+
             stopwatch.Stop();
-            Debug.Log("SDF bake completed in "+stopwatch.Elapsed.ToString("mm\\:ss\\.ff"));
+            Debug.Log("SDF bake completed in " + stopwatch.Elapsed.ToString("mm\\:ss\\.ff"));
 #if UNITY_EDITOR
-			EditorUtility.ClearProgressBar();
+            EditorUtility.ClearProgressBar();
 #endif
-			float[] distancesOut = new float[_settings.CellCount];
+            float[] distancesOut = new float[_settings.CellCount];
             distances.CopyTo(distancesOut);
-            
+
             //cleanup all the temp arrays
             distances.Dispose();
             allResults.Dispose();
             sphereSamples.Dispose();
             //randomDirections.Dispose();
             volumePlanes.Dispose();
-            
-            foreach (var c in geoFront)
+
+            foreach (Collider c in geoFront)
             {
                 Object.DestroyImmediate(c.gameObject);
             }
-            foreach (var c in geoBack)
+
+            foreach (Collider c in geoBack)
             {
                 Object.DestroyImmediate(c.gameObject);
             }
-            
+
             //NOTE do not use max distance, instead use aabbMagnitude so distance fields are interchangeable 
-            bakeComplete?.Invoke( this, distancesOut, aabbMagnitude, passthrough );
+            bakeComplete?.Invoke(this, distancesOut, aabbMagnitude, passthrough);
         }
-        
+
 #if USE_BURST_AND_MATH
         [BurstCompile]
 #endif
-        struct CalculateRayLengths : IJobParallelFor
+        private struct CalculateRayLengths : IJobParallelFor
         {
             [ReadOnly] public NativeArray<vec3> Samples;
             [ReadOnly] public NativeArray<vec4> VolumePlanes;
@@ -246,9 +248,9 @@ namespace SDFr
             public NativeSlice<float> RayLengths;
             public vec3 RayOrigin;
             public float RayLength; //default ray length
-            
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            bool PlaneRaycast( vec3 ro, vec3 rd, vec4 plane, out float distance )
+            private bool PlaneRaycast(vec3 ro, vec3 rd, vec4 plane, out float distance)
             {
 #if USE_BURST_AND_MATH
                 float a = dot(rd, plane.xyz);
@@ -257,36 +259,39 @@ namespace SDFr
                 float a = dot(rd, plane);
                 float num = -dot(ro, plane) - plane.w;
 #endif
-                if ( abs(a) < EPSILON )
+                if (abs(a) < EPSILON)
                 {
                     distance = 0.0f;
                     return false;
                 }
+
                 distance = num / a;
                 return distance > 0.0;
             }
-            
+
             public void Execute(int index)
             {
                 vec3 rd = Samples[index];
                 vec3 ro = RayOrigin;
-                
+
                 float nearest = RayLength;
-                
+
                 for (int v = 0; v < 6; v++)
                 {
-                    if ( PlaneRaycast(ro,rd,VolumePlanes[v],out float d)) 
+                    if (PlaneRaycast(ro, rd, VolumePlanes[v], out float d))
+                    {
                         nearest = min(nearest, d);
+                    }
                 }
 
                 RayLengths[index] = nearest;
             }
         }
-        
+
 #if USE_BURST_AND_MATH
         [BurstCompile]
 #endif
-        struct PrepareRaycastCommands : IJobParallelFor
+        private struct PrepareRaycastCommands : IJobParallelFor
         {
             [ReadOnly] public NativeArray<vec3> Samples;
             [NativeDisableContainerSafetyRestriction] //NOTE should be SAFE because it is using slices
@@ -294,13 +299,13 @@ namespace SDFr
             public NativeArray<RaycastCommand> Raycasts;
             public vec3 RayOrigin;
             public int LayerMask;
-            
+
             public void Execute(int index)
             {
                 vec3 rd = Samples[index];
                 vec3 ro = RayOrigin;
-                                
-                Raycasts[index] = new RaycastCommand(ro, rd, RayLengths[index], LayerMask );
+
+                Raycasts[index] = new RaycastCommand(ro, rd, RayLengths[index], LayerMask);
             }
         }
 
@@ -312,11 +317,11 @@ namespace SDFr
             public float BackMinDistance;
             public int BackTotalHits;
         }
-        
+
 #if USE_BURST_AND_MATH
         [BurstCompile]
 #endif
-        struct ProcessHits : IJob
+        private struct ProcessHits : IJob
         {
             [NativeDisableContainerSafetyRestriction]
             [ReadOnly] public NativeSlice<RaycastHit> FrontHits;
@@ -324,7 +329,7 @@ namespace SDFr
             [ReadOnly] public NativeSlice<RaycastHit> BackHits;
             [NativeDisableContainerSafetyRestriction]
             public NativeSlice<CellResults> Results; //front and back
-            
+
             public void Execute()
             {
                 int samples = FrontHits.Length;
@@ -332,15 +337,15 @@ namespace SDFr
                 int backHits = 0;
                 float minFront = float.MaxValue;
                 float minBack = float.MaxValue;
-                
+
                 for (int i = 0; i < samples; i++)
                 {
                     RaycastHit frontHit = FrontHits[i];
                     RaycastHit backHit = BackHits[i];
-                    
+
                     float frontHitDistance = abs(frontHit.distance);
                     float backHitDistance = abs(backHit.distance);
-                    
+
                     //workaround to avoid using Collider (main thread only)
                     bool didFrontHit = frontHitDistance > 0f;
                     bool didBackHit = backHitDistance > 0f;
@@ -358,13 +363,13 @@ namespace SDFr
                             minFront = min(minFront, frontHitDistance);
                         }
                     }
-                    else if ( didBackHit )
+                    else if (didBackHit)
                     {
                         backHits++;
                         minBack = min(minBack, backHitDistance);
                     }
                 }
-                
+
                 CellResults results;
                 results.FrontTotalHits = frontHits;
                 results.FrontMinDistance = minFront;
@@ -375,28 +380,28 @@ namespace SDFr
             }
         }
 
-        struct CompareDistances : IJobParallelFor
+        private struct CompareDistances : IJobParallelFor
         {
-            [ReadOnly] 
+            [ReadOnly]
             public NativeArray<CellResults> Results;
             public NativeArray<float> Distances;
-            
-            public void Execute( int index )
+
+            public void Execute(int index)
             {
                 //now based on results determine if cell is front or back facing
                 CellResults results = Results[index];
-                
+
                 int combinedHits = results.FrontTotalHits + results.BackTotalHits;
-                
+
                 float finalDistance = 0f;
                 float sign = 1f;
                 float fh = max(0.000001f, results.FrontTotalHits);
                 float bh = max(0.000001f, results.BackTotalHits);
-                
+
                 //NOTE only take if combined hits are greater than 0, otherwise no hit
                 if (combinedHits > 0)
                 {
-                    if (fh / bh >= 1f ) //more front hits
+                    if (fh / bh >= 1f) //more front hits
                     {
                         finalDistance = results.FrontMinDistance;
                         sign = 1f;
@@ -413,27 +418,39 @@ namespace SDFr
                 {
                     finalDistance = float.MaxValue;
                 }
-                
+
                 //store signed distance
                 Distances[index] = finalDistance * sign;
             }
         }
-        
-        private static void CreateColliders( ref List<Renderer> renderers, ref List<Collider> geoFront, ref List<Collider> geoBack)
+
+        private static void CreateColliders(ref List<Renderer> renderers, ref List<Collider> geoFront, ref List<Collider> geoBack)
         {
-            foreach (var r in renderers)
+            foreach (Renderer r in renderers)
             {
-                Mesh mesh = null;
+                Mesh mesh;
                 if (r is MeshRenderer)
                 {
                     MeshFilter f = r.GetComponent<MeshFilter>();
-                    if (f == null) continue;
-                    if (f.sharedMesh == null) continue;
+                    if (f == null)
+                    {
+                        continue;
+                    }
+
+                    if (f.sharedMesh == null)
+                    {
+                        continue;
+                    }
+
                     mesh = f.sharedMesh;
                 }
                 else if (r is SkinnedMeshRenderer)
                 {
-                    if ((r as SkinnedMeshRenderer).sharedMesh == null) continue;
+                    if ((r as SkinnedMeshRenderer).sharedMesh == null)
+                    {
+                        continue;
+                    }
+
                     mesh = (r as SkinnedMeshRenderer).sharedMesh;
                 }
                 else
@@ -448,7 +465,7 @@ namespace SDFr
                 vec3 tScale = t.lossyScale;
 
                 //front facing collision
-                GameObject front = new GameObject {layer = LAYER_FRONT_GEO};
+                GameObject front = new() { layer = LAYER_FRONT_GEO };
                 front.transform.position = tPosition;
                 front.transform.rotation = tRotation;
                 front.transform.localScale = tScale;
@@ -456,11 +473,11 @@ namespace SDFr
                 frontCollider.cookingOptions = MeshColliderCookingOptions.None;
                 frontCollider.convex = false;
                 frontCollider.sharedMesh = mesh;
-                geoFront.Add( frontCollider );
+                geoFront.Add(frontCollider);
 
                 //back facing collision
-                Mesh flippedMesh = FlipTriangles( mesh );
-                GameObject back = new GameObject {layer = LAYER_BACK_GEO};
+                Mesh flippedMesh = FlipTriangles(mesh);
+                GameObject back = new() { layer = LAYER_BACK_GEO };
                 back.transform.position = tPosition;
                 back.transform.rotation = tRotation;
                 back.transform.localScale = tScale;
@@ -468,15 +485,18 @@ namespace SDFr
                 backCollider.cookingOptions = MeshColliderCookingOptions.None;
                 backCollider.convex = false;
                 backCollider.sharedMesh = flippedMesh;
-                geoBack.Add( backCollider );
+                geoBack.Add(backCollider);
             }
         }
 
         private static Mesh FlipTriangles(Mesh mesh)
         {
-            if (mesh == null) return null;
+            if (mesh == null)
+            {
+                return null;
+            }
 
-            Mesh flipped = new Mesh
+            Mesh flipped = new()
             {
                 vertices = mesh.vertices,
                 uv = mesh.uv,
@@ -489,10 +509,10 @@ namespace SDFr
                 int[] triangles = mesh.GetTriangles(s);
                 for (int i = 0; i < triangles.Length / 3; i++)
                 {
-                    int a = triangles[i * 3 + 0];
-                    int c = triangles[i * 3 + 2];
-                    triangles[i * 3 + 0] = c;
-                    triangles[i * 3 + 2] = a;
+                    int a = triangles[(i * 3) + 0];
+                    int c = triangles[(i * 3) + 2];
+                    triangles[(i * 3) + 0] = c;
+                    triangles[(i * 3) + 2] = a;
                 }
 
                 flipped.SetTriangles(triangles, s);
@@ -506,18 +526,18 @@ namespace SDFr
 #if USE_BURST_AND_MATH
         [BurstCompile]
 #endif
-        private static void GetUniformPointsOnSphereNormalized( ref NativeArray<vec3> samples )
+        private static void GetUniformPointsOnSphereNormalized(ref NativeArray<vec3> samples)
         {
             int count = samples.Length;
             float fPoints = count;
             float pi = PI;
             float inc = pi * (3f - sqrt(5f));
             float off = 2f / fPoints;
-		
+
             for (int k = 0; k < count; k++)
             {
-                float y = k * off - 1f + (off / 2f);
-                float r = sqrt(1f - y * y);
+                float y = (k * off) - 1f + (off / 2f);
+                float r = sqrt(1f - (y * y));
                 float phi = k * inc;
 
                 samples[k] = normalize(new vec3(cos(phi) * r, y, sin(phi) * r));
@@ -527,7 +547,7 @@ namespace SDFr
 #if USE_BURST_AND_MATH
         [BurstCompile]
 #endif
-        private static void GetRandomDirections( vec3 halfVoxel, uint seed, ref NativeArray<vec3> samples)
+        private static void GetRandomDirections(vec3 halfVoxel, uint seed, ref NativeArray<vec3> samples)
         {
             int count = samples.Length;
 
@@ -539,12 +559,11 @@ namespace SDFr
 #if USE_BURST_AND_MATH
                 samples[k] = random.NextFloat3Direction() * halfVoxel;
 #else
-                samples[k] = Vector3.Scale(Random.onUnitSphere,halfVoxel);
+                samples[k] = Vector3.Scale(Random.onUnitSphere, halfVoxel);
 #endif
             }
-
         }
-        
+
 #if USE_BURST_AND_MATH
         private static readonly float PI = (float)math.PI; 
         private static readonly float EPSILON = math.FLT_MIN_NORMAL;
@@ -554,7 +573,7 @@ namespace SDFr
 #endif      
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float max(float a, float b)
+        private static float max(float a, float b)
         {
 #if USE_BURST_AND_MATH
             return math.max(a,b);  
@@ -562,9 +581,9 @@ namespace SDFr
             return Mathf.Max(a, b);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float min(float a, float b)
+        private static float min(float a, float b)
         {
 #if USE_BURST_AND_MATH
             return math.min(a,b);  
@@ -574,7 +593,7 @@ namespace SDFr
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static int min(int a, int b)
+        private static int min(int a, int b)
         {
 #if USE_BURST_AND_MATH
             return math.min(a,b);  
@@ -582,9 +601,9 @@ namespace SDFr
             return Mathf.Min(a, b);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float abs(float a)
+        private static float abs(float a)
         {
 #if USE_BURST_AND_MATH
             return math.abs(a);  
@@ -592,9 +611,9 @@ namespace SDFr
             return Mathf.Abs(a);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float sqrt(float a)
+        private static float sqrt(float a)
         {
 #if USE_BURST_AND_MATH
             return math.sqrt(a);  
@@ -602,9 +621,9 @@ namespace SDFr
             return Mathf.Sqrt(a);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float sin(float a)
+        private static float sin(float a)
         {
 #if USE_BURST_AND_MATH
             return math.sin(a);  
@@ -612,9 +631,9 @@ namespace SDFr
             return Mathf.Sin(a);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float cos(float a)
+        private static float cos(float a)
         {
 #if USE_BURST_AND_MATH
             return math.cos(a);  
@@ -622,19 +641,19 @@ namespace SDFr
             return Mathf.Cos(a);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static float dot(vec3 a, vec3 b)
+        private static float dot(vec3 a, vec3 b)
         {
 #if USE_BURST_AND_MATH
             return math.dot(a,b);  
 #else
-            return Vector3.Dot(a,b);
+            return Vector3.Dot(a, b);
 #endif
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static vec3 normalize(vec3 a)
+        private static vec3 normalize(vec3 a)
         {
 #if USE_BURST_AND_MATH
             return math.normalize(a);  
@@ -642,6 +661,5 @@ namespace SDFr
             return Vector3.Normalize(a);
 #endif
         }
-        
     }
 }
